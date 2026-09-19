@@ -173,7 +173,7 @@
       z-index: 20;
     }
 
-    /* Lingkaran Segel Amplop */
+    /* Lingkaran Pengait Segel Amplop */
     .royal-wax-seal {
       width: 62px;
       height: 62px;
@@ -462,7 +462,7 @@
       </h3>
       
       <p class="text-[11.5px] text-amber-100/80 mb-4 leading-relaxed font-normal">
-        Silakan ketik <span class="text-amber-300 font-bold">Nama Lengkap Anda</span> yang sesuai dengan yang terdaftar untuk membuka undangan resmi:
+        Silakan ketik <span class="text-amber-300 font-bold">Nama Lengkap Anda</span>sesuai dengan yang terdaftar untuk membuka undangan resmi:
       </p>
 
       <div class="w-full space-y-3">
@@ -472,7 +472,7 @@
 
         <p id="authErrorMsg" class="text-[10px] text-rose-400 font-medium hidden">
           <i class="fa-solid fa-circle-exclamation mr-1"></i>
-          Nama tidak terdaftar dalam undangan VIP. Harap masukkan nama lengkap.
+          Nama tidak terdaftar dalam undangan VIP. Harap masukkan nama lengkap Anda.
         </p>
 
         <button onclick="verifikasiNamaTamu()" class="luxury-btn w-full py-2.5 rounded-xl bg-gradient-to-r from-[#70151c] via-[#8c1822] to-[#70151c] text-amber-100 font-cinzel font-bold text-xs tracking-widest border border-amber-400/80 shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
@@ -492,7 +492,7 @@
   <!-- CONTAINER UTAMA -->
   <main class="invitation-frame relative bg-stone-100 sm:rounded-2xl overflow-hidden border border-amber-500/40 flex flex-col justify-between">
 
-    <!-- Efek Partikel -->
+    <!-- Kanvas Efek Partikel -->
     <canvas id="fxCanvas"></canvas>
 
     <!-- Petunjuk Swipe Lembaran -->
@@ -508,6 +508,7 @@
       
       <div id="royalEnvelope" class="relative w-full h-full rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.9)] border-2 border-amber-500/40 bg-[#081f16] flex flex-col justify-between">
         
+        <!-- Background Foto Masjid Utama -->
         <img 
           src="fbebf820c10f22e1b222d929f1682333.jpg?v=fresh" 
           onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='masjid.jpg';} else if(this.dataset.retry==='1'){this.dataset.retry='2'; this.src='https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=1000&auto=format&fit=crop';}"
@@ -521,11 +522,13 @@
         <div class="absolute bottom-2 left-2 z-40 text-amber-400/70 text-xs pointer-events-none">❖</div>
         <div class="absolute bottom-2 right-2 z-40 text-amber-400/70 text-xs pointer-events-none">❖</div>
 
+        <!-- Kartu di dalam amplop -->
         <div class="env-inner-card border border-amber-400/30">
           <img src="UNDANGAN MAULID VVIP.png?v=fresh" alt="Kartu Maulid Akbar" class="w-full h-full object-cover">
           <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30 pointer-events-none"></div>
         </div>
 
+        <!-- Lipatan Atas Amplop -->
         <div class="env-top-flap flex items-center justify-center overflow-hidden relative">
           <img 
             src="fbebf820c10f22e1b222d929f1682333.jpg?v=fresh" 
@@ -535,6 +538,7 @@
           <div class="absolute inset-0 bg-gradient-to-b from-[#030c08]/95 via-[#071f15]/85 to-[#0b2b20]/60 pointer-events-none"></div>
         </div>
 
+        <!-- Kantong Bawah Amplop -->
         <div class="env-bottom-pocket overflow-hidden relative">
           <img 
             src="fbebf820c10f22e1b222d929f1682333.jpg?v=fresh" 
@@ -545,9 +549,10 @@
           <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/90 to-transparent pointer-events-none z-20"></div>
         </div>
 
+        <!-- Elemen Pusat Amplop -->
         <div class="absolute inset-0 z-40 flex flex-col items-center justify-center px-6 pointer-events-none">
           
-          <!-- LOGO PENGAIT SEPAKET DENGAN LOGO ASLI (MENUTUPI PREV LOGO DENGAN UKURAN & POSISI SAMA PERSIS) -->
+          <!-- LOGO PENGAIT SEPAKET DENGAN LOGO ASLI (MENUTUPI PREV LOGO SECARA PRESISI DI TENGAH LIPATAN) -->
           <div class="royal-wax-seal mb-3 pointer-events-auto transform hover:scale-105 transition-transform cursor-pointer" onclick="handleTombolBuka()" title="Buka Undangan">
             <img 
               src="Cuplikan layar 2026-09-18 200553.png" 
@@ -569,7 +574,7 @@
 
           <div class="flex items-center justify-center gap-2 pt-3 text-[10px] text-amber-100/90 font-medium drop-shadow pointer-events-auto">
             <i class="fa-solid fa-music text-amber-400 text-xs animate-pulse"></i>
-            <span>Lantunan Mahallul Qiyam - Ustadzah Halimah 'Alaydrus</span>
+            <span>Lantunan Mahallul Qiyam - Ustadzah Halimah Alaydrus</span>
           </div>
 
         </div>
@@ -583,7 +588,7 @@
     <!-- ============================================== -->
     <div class="slide-viewport">
       
-      <!-- Slide 1: HALAMAN PREVIEW AMPLOP TAMPILAN PENUH (UNDANGAN MAULID VVIP.png) -->
+      <!-- Slide 1: PREVIEW AMPLOP TAMPILAN PENUH (UNDANGAN MAULID VVIP.png) -->
       <div id="slide-1" class="page-slide active">
         <img 
           src="UNDANGAN MAULID VVIP.png?v=fresh" 
@@ -610,7 +615,7 @@
           </span>
         </div>
 
-        <!-- Wadah Teks Nama Tamu (Dinamis Sesuai Panjang Nama) -->
+        <!-- Wadah Teks Nama Tamu (Dinamis Sesuai Panjang Huruf) -->
         <div class="absolute z-20 flex items-center justify-center pointer-events-none" style="top: 74.4%; left: 22.5%; width: 74.0%; height: 5.4%;">
           <div class="bg-white/95 border border-stone-300/80 shadow-md rounded-full px-5 py-1 max-w-full flex items-center justify-center">
             <span id="slideGuestName" class="text-[10.5px] sm:text-[12px] font-black text-[#1a252f] font-cinzel uppercase tracking-wider text-center whitespace-nowrap overflow-hidden text-ellipsis"></span>
@@ -619,14 +624,14 @@
         <div class="paper-curl-shade"></div>
       </div>
 
-      <!-- Slide 4: ACARA.png (Countdown & Lokasi Google Maps) -->
+      <!-- Slide 4: ACARA.png (Jadwal, Countdown Real-Time, & Peta) -->
       <div id="slide-4" class="page-slide">
         <img src="ACARA.png?v=fresh" alt="Acara" class="w-full h-full object-fill">
 
-        <!-- Area Sentuh Lokasi Peta At-Tin -->
+        <!-- Area Sentuh Peta Lokasi At-Tin -->
         <a href="https://maps.app.goo.gl/f7aA17GN3GxNhQ2c6" target="_blank" rel="noopener noreferrer" class="absolute z-30 cursor-pointer rounded-full" style="top: 68.5%; left: 45%; width: 20%; height: 7.5%;" title="Buka Lokasi Masjid Agung At-Tin di Google Maps"></a>
 
-        <!-- Jam Countdown Real-Time -->
+        <!-- Jam Countdown Real-Time Menuju Acara -->
         <div class="absolute flex items-center justify-between font-mono font-bold text-base sm:text-lg bg-[#faf7f2] px-1 rounded" style="top: 79.5%; left: 29.5%; width: 57%; height: 4.8%;">
           <span id="cdDays" class="w-1/4 text-center text-stone-950">00</span>
           <span class="text-stone-400">:</span>
@@ -655,7 +660,7 @@
         <div class="paper-curl-shade"></div>
       </div>
 
-      <!-- Slide 7: MEDIA SOSIAL & INFAQ (Dengan Background Masjid Nabawi & Kaligrafi) -->
+      <!-- Slide 7: MEDIA SOSIAL & INFAQ (DITAMBAHKAN 2 PANEL TIKTOK BARU SECARA PRESISI) -->
       <div id="slide-7" class="page-slide bg-[#fdfbf7] flex flex-col justify-between overflow-hidden">
         
         <!-- Bilah Sisi Kiri (Spine Hijau Alami) -->
@@ -693,58 +698,85 @@
             <div class="absolute bottom-12 right-0 w-36 h-36 bg-emerald-200/15 rounded-full blur-3xl"></div>
           </div>
 
-          <div class="relative z-10 flex flex-col justify-between h-full pt-2 pb-2.5 px-3 sm:px-4">
+          <div class="relative z-10 flex flex-col justify-between h-full pt-1.5 pb-2 px-3 sm:px-4">
             
-            <div class="flex flex-col space-y-1.5">
+            <div class="flex flex-col space-y-1">
               
               <div class="text-center space-y-0.5 pt-0.5">
-                <span class="text-[7.5px] font-extrabold tracking-[0.22em] text-emerald-800 font-cinzel uppercase bg-emerald-100/90 px-2 py-0.5 rounded-full border border-emerald-300/70 shadow-xs">
+                <span class="text-[7px] font-extrabold tracking-[0.22em] text-emerald-800 font-cinzel uppercase bg-emerald-100/90 px-2 py-0.5 rounded-full border border-emerald-300/70 shadow-xs">
                   OFFICIAL CHANNELS
                 </span>
-                <h2 class="text-[11px] sm:text-[12px] font-black font-cinzel text-[#1c3326] tracking-wider uppercase leading-tight pt-0.5">
+                <h2 class="text-[10.5px] sm:text-[11.5px] font-black font-cinzel text-[#1c3326] tracking-wider uppercase leading-tight pt-0.5">
                   Media Sosial & Infaq
                 </h2>
               </div>
 
-              <div class="grid grid-cols-2 gap-1.5 pt-0.5">
+              <!-- GRID 6 PANEL SOSIAL MEDIA (2 YouTube, 1 Instagram, 3 TikTok) -->
+              <div class="grid grid-cols-2 gap-1 pt-0.5">
                 
-                <a href="https://www.youtube.com/@mtqlofficial2214" target="_blank" rel="noopener noreferrer" class="futuristic-card p-1.5 rounded-xl flex items-center gap-2 group cursor-pointer">
-                  <div class="w-6 h-6 rounded-lg bg-red-600/15 border border-red-500/40 flex items-center justify-center text-red-600 group-hover:scale-110 transition-transform shrink-0">
-                    <i class="fa-brands fa-youtube text-xs"></i>
+                <!-- 1. YouTube MTQL -->
+                <a href="https://www.youtube.com/@mtqlofficial2214" target="_blank" rel="noopener noreferrer" class="futuristic-card p-1 rounded-xl flex items-center gap-1.5 group cursor-pointer">
+                  <div class="w-5 h-5 rounded-lg bg-red-600/15 border border-red-500/40 flex items-center justify-center text-red-600 group-hover:scale-110 transition-transform shrink-0">
+                    <i class="fa-brands fa-youtube text-[11px]"></i>
                   </div>
                   <div class="text-left overflow-hidden">
-                    <p class="text-[7px] text-zinc-500 font-bold uppercase leading-none">YT MTQL</p>
-                    <p class="text-[9px] font-bold text-zinc-800 truncate group-hover:text-red-600 transition-colors leading-tight">MTQL Official</p>
+                    <p class="text-[6.5px] text-zinc-500 font-bold uppercase leading-none">YT MTQL</p>
+                    <p class="text-[8px] font-bold text-zinc-800 truncate group-hover:text-red-600 transition-colors leading-tight">MTQL Official</p>
                   </div>
                 </a>
 
-                <a href="https://www.youtube.com/@MTNurulHasanah" target="_blank" rel="noopener noreferrer" class="futuristic-card p-1.5 rounded-xl flex items-center gap-2 group cursor-pointer">
-                  <div class="w-6 h-6 rounded-lg bg-red-600/15 border border-red-500/40 flex items-center justify-center text-red-600 group-hover:scale-110 transition-transform shrink-0">
-                    <i class="fa-brands fa-youtube text-xs"></i>
+                <!-- 2. YouTube MT Nurul Hasanah -->
+                <a href="https://www.youtube.com/@MTNurulHasanah" target="_blank" rel="noopener noreferrer" class="futuristic-card p-1 rounded-xl flex items-center gap-1.5 group cursor-pointer">
+                  <div class="w-5 h-5 rounded-lg bg-red-600/15 border border-red-500/40 flex items-center justify-center text-red-600 group-hover:scale-110 transition-transform shrink-0">
+                    <i class="fa-brands fa-youtube text-[11px]"></i>
                   </div>
                   <div class="text-left overflow-hidden">
-                    <p class="text-[7px] text-zinc-500 font-bold uppercase leading-none">YT MTNH</p>
-                    <p class="text-[9px] font-bold text-zinc-800 truncate group-hover:text-red-600 transition-colors leading-tight">MT Nurul Hasanah</p>
+                    <p class="text-[6.5px] text-zinc-500 font-bold uppercase leading-none">YT MTNH</p>
+                    <p class="text-[8px] font-bold text-zinc-800 truncate group-hover:text-red-600 transition-colors leading-tight">MT Nurul Hasanah</p>
                   </div>
                 </a>
 
+                <!-- 3. Instagram @mtaqwalillah -->
                 <a href="https://www.instagram.com/mtaqwalillah" target="_blank" rel="noopener noreferrer" class="futuristic-card p-1.5 rounded-xl flex items-center gap-2 group cursor-pointer">
-                  <div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-amber-500/20 via-pink-500/20 to-purple-500/20 border border-pink-500/40 flex items-center justify-center text-pink-600 group-hover:scale-110 transition-transform shrink-0">
-                    <i class="fa-brands fa-instagram text-xs"></i>
+                  <div class="w-5 h-5 rounded-lg bg-gradient-to-tr from-amber-500/20 via-pink-500/20 to-purple-500/20 border border-pink-500/40 flex items-center justify-center text-pink-600 group-hover:scale-110 transition-transform shrink-0">
+                    <i class="fa-brands fa-instagram text-[11px]"></i>
                   </div>
                   <div class="text-left overflow-hidden">
-                    <p class="text-[7px] text-zinc-500 font-bold uppercase leading-none">Instagram</p>
-                    <p class="text-[9px] font-bold text-zinc-800 truncate group-hover:text-pink-600 transition-colors leading-tight">@mtaqwalillah</p>
+                    <p class="text-[6.5px] text-zinc-500 font-bold uppercase leading-none">Instagram</p>
+                    <p class="text-[8px] font-bold text-zinc-800 truncate group-hover:text-pink-600 transition-colors leading-tight">@mtaqwalillah</p>
                   </div>
                 </a>
 
-                <a href="https://www.tiktok.com/@mtql313" target="_blank" rel="noopener noreferrer" class="futuristic-card p-1.5 rounded-xl flex items-center gap-2 group cursor-pointer">
-                  <div class="w-6 h-6 rounded-lg bg-cyan-500/15 border border-cyan-500/40 flex items-center justify-center text-cyan-700 group-hover:scale-110 transition-transform shrink-0">
-                    <i class="fa-brands fa-tiktok text-xs"></i>
+                <!-- 4. TikTok @mtql313 -->
+                <a href="https://www.tiktok.com/@mtql313" target="_blank" rel="noopener noreferrer" class="futuristic-card p-1 rounded-xl flex items-center gap-1.5 group cursor-pointer">
+                  <div class="w-5 h-5 rounded-lg bg-cyan-500/15 border border-cyan-500/40 flex items-center justify-center text-cyan-700 group-hover:scale-110 transition-transform shrink-0">
+                    <i class="fa-brands fa-tiktok text-[11px]"></i>
                   </div>
                   <div class="text-left overflow-hidden">
-                    <p class="text-[7px] text-zinc-500 font-bold uppercase leading-none">TikTok</p>
-                    <p class="text-[9px] font-bold text-zinc-800 truncate group-hover:text-cyan-700 transition-colors leading-tight">@mtql313</p>
+                    <p class="text-[6.5px] text-zinc-500 font-bold uppercase leading-none">TikTok MTQL</p>
+                    <p class="text-[8px] font-bold text-zinc-800 truncate group-hover:text-cyan-700 transition-colors leading-tight">@mtql313</p>
+                  </div>
+                </a>
+
+                <!-- 5. TikTok @zubaidah.hm (PERSIS DI BAWAH PANEL INSTAGRAM) -->
+                <a href="https://www.tiktok.com/@zubaidah.hm?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="futuristic-card p-1 rounded-xl flex items-center gap-1.5 group cursor-pointer">
+                  <div class="w-5 h-5 rounded-lg bg-cyan-500/15 border border-cyan-500/40 flex items-center justify-center text-cyan-700 group-hover:scale-110 transition-transform shrink-0">
+                    <i class="fa-brands fa-tiktok text-[11px]"></i>
+                  </div>
+                  <div class="text-left overflow-hidden">
+                    <p class="text-[6.5px] text-zinc-500 font-bold uppercase leading-none">TikTok Ustadzah Zubaidah HM</p>
+                    <p class="text-[8px] font-bold text-zinc-800 truncate group-hover:text-cyan-700 transition-colors leading-tight">@zubaidah.hm</p>
+                  </div>
+                </a>
+
+                <!-- 6. TikTok @zahrotul.muna.mtn (PERSIS DI BAWAH PANEL TIKTOK 1) -->
+                <a href="https://www.tiktok.com/@zahrotul.muna.mtn?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="futuristic-card p-1 rounded-xl flex items-center gap-1.5 group cursor-pointer">
+                  <div class="w-5 h-5 rounded-lg bg-cyan-500/15 border border-cyan-500/40 flex items-center justify-center text-cyan-700 group-hover:scale-110 transition-transform shrink-0">
+                    <i class="fa-brands fa-tiktok text-[11px]"></i>
+                  </div>
+                  <div class="text-left overflow-hidden">
+                    <p class="text-[6.5px] text-zinc-500 font-bold uppercase leading-none">TikTok MTNH</p>
+                    <p class="text-[8px] font-bold text-zinc-800 truncate group-hover:text-cyan-700 transition-colors leading-tight">@zahrotul.muna.mtn</p>
                   </div>
                 </a>
 
@@ -752,37 +784,37 @@
 
             </div>
 
-            <!-- Kaligrafi Muhammad SAW -->
-            <div class="my-auto flex flex-col items-center justify-center pointer-events-none py-1">
+            <!-- Logo Kaligrafi Muhammad SAW -->
+            <div class="my-auto flex flex-col items-center justify-center pointer-events-none py-0.5">
               <div class="prophet-emblem flex flex-col items-center justify-center">
                 <img 
                   src="dabde5306bc60fcce558686108a084e1.jpg?v=fresh" 
                   onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='muhammad.jpg';} else if(this.dataset.retry==='1'){this.dataset.retry='2'; this.src='https://upload.wikimedia.org/wikipedia/commons/3/3d/Muhammad2.png';}"
                   alt="Kaligrafi Muhammad Rasulullah" 
-                  class="w-48 h-auto sm:w-52 sm:h-auto object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.55)]">
+                  class="w-40 h-auto sm:w-44 sm:h-auto object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.55)]">
               </div>
             </div>
 
-            <!-- Infaq & Live Streaming -->
-            <div class="flex flex-col space-y-1.5 pt-0.5">
+            <!-- Kelompok Bawah (Infaq & Live Streaming) -->
+            <div class="flex flex-col space-y-1 pt-0.5">
               
-              <div class="rounded-xl p-2 bg-gradient-to-br from-[#0c3323] via-[#09261a] to-[#051810] text-amber-100 border border-amber-400/50 shadow-md">
+              <div class="rounded-xl p-1.5 bg-gradient-to-br from-[#0c3323] via-[#09261a] to-[#051810] text-amber-100 border border-amber-400/50 shadow-md">
                 
                 <div class="flex items-center justify-between pb-1 border-b border-emerald-500/30">
                   <div class="flex items-center gap-1">
                     <i class="fa-solid fa-hand-holding-heart text-amber-400 text-xs"></i>
-                    <span class="text-[8.5px] font-bold tracking-wider font-cinzel text-amber-200 uppercase">Infaq Acara Maulid</span>
+                    <span class="text-[8px] font-bold tracking-wider font-cinzel text-amber-200 uppercase">Infaq Acara Maulid</span>
                   </div>
-                  <span class="text-[8px] font-black text-emerald-300 tracking-wider px-1.5 py-0.2 rounded bg-emerald-900/60 border border-emerald-500/40 font-mono">BSI</span>
+                  <span class="text-[7.5px] font-black text-emerald-300 tracking-wider px-1.5 py-0.2 rounded bg-emerald-900/60 border border-emerald-500/40 font-mono">BSI</span>
                 </div>
 
                 <div class="mt-1 p-1 rounded-lg bg-black/40 border border-emerald-500/20 flex items-center justify-between">
                   <div>
                     <p class="text-[6.5px] text-amber-100/70 uppercase leading-none">a.n Majelis Talim Taqwa Lillah</p>
-                    <p class="text-[10px] font-mono font-extrabold text-amber-300 tracking-wider leading-snug">7330572207</p>
+                    <p class="text-[9.5px] font-mono font-extrabold text-amber-300 tracking-wider leading-snug">7330572207</p>
                   </div>
-                  <button onclick="salinTeks('7330572207', 'Rekening MTQL (7330572207)')" class="px-2 py-0.5 rounded bg-amber-500/25 hover:bg-amber-500/40 text-amber-200 text-[8px] font-bold flex items-center gap-1 border border-amber-400/40 transition active:scale-90 cursor-pointer">
-                    <i class="fa-solid fa-copy text-[8px]"></i>
+                  <button onclick="salinTeks('7330572207', 'Rekening MTQL (7330572207)')" class="px-2 py-0.5 rounded bg-amber-500/25 hover:bg-amber-500/40 text-amber-200 text-[7.5px] font-bold flex items-center gap-1 border border-amber-400/40 transition active:scale-90 cursor-pointer">
+                    <i class="fa-solid fa-copy text-[7.5px]"></i>
                     <span>Salin</span>
                   </button>
                 </div>
@@ -790,23 +822,23 @@
                 <div class="mt-1 p-1 rounded-lg bg-black/40 border border-emerald-500/20 flex items-center justify-between">
                   <div>
                     <p class="text-[6.5px] text-amber-100/70 uppercase leading-none">a.n Majelis Talim Nurul Hasanah</p>
-                    <p class="text-[10px] font-mono font-extrabold text-amber-300 tracking-wider leading-snug">7352733077</p>
+                    <p class="text-[9.5px] font-mono font-extrabold text-amber-300 tracking-wider leading-snug">7352733077</p>
                   </div>
-                  <button onclick="salinTeks('7352733077', 'Rekening MTNH (7352733077)')" class="px-2 py-0.5 rounded bg-amber-500/25 hover:bg-amber-500/40 text-amber-200 text-[8px] font-bold flex items-center gap-1 border border-amber-400/40 transition active:scale-90 cursor-pointer">
-                    <i class="fa-solid fa-copy text-[8px]"></i>
+                  <button onclick="salinTeks('7352733077', 'Rekening MTNH (7352733077)')" class="px-2 py-0.5 rounded bg-amber-500/25 hover:bg-amber-500/40 text-amber-200 text-[7.5px] font-bold flex items-center gap-1 border border-amber-400/40 transition active:scale-90 cursor-pointer">
+                    <i class="fa-solid fa-copy text-[7.5px]"></i>
                     <span>Salin</span>
                   </button>
                 </div>
 
                 <div class="mt-1 pt-1 border-t border-emerald-500/20 flex items-center justify-between gap-1">
-                  <span class="text-[7px] text-zinc-300">Lapor WA:</span>
+                  <span class="text-[6.5px] text-zinc-300">Lapor WA:</span>
                   <div class="flex gap-1">
-                    <a href="https://wa.me/6281399169919?text=Assalamu'alaikum%20Ibu%20Nurhasanah,%20saya%20konfirmasi%20transfer%20acara%20Maulid%20Akbar%20MTQL" target="_blank" rel="noopener noreferrer" class="px-1.5 py-0.5 rounded bg-emerald-600/35 hover:bg-emerald-600/50 text-emerald-300 text-[7px] font-bold border border-emerald-500/40 flex items-center gap-1 transition">
-                      <i class="fa-brands fa-whatsapp text-[8px]"></i>
+                    <a href="https://wa.me/6281399169919?text=Assalamu'alaikum%20Ibu%20Nurhasanah,%20saya%20konfirmasi%20transfer%20acara%20Maulid%20Akbar%20MTQL" target="_blank" rel="noopener noreferrer" class="px-1.5 py-0.5 rounded bg-emerald-600/35 hover:bg-emerald-600/50 text-emerald-300 text-[6.5px] font-bold border border-emerald-500/40 flex items-center gap-1 transition">
+                      <i class="fa-brands fa-whatsapp text-[7.5px]"></i>
                       <span>Bendahara MTQL</span>
                     </a>
-                    <a href="https://wa.me/6289662960743?text=Assalamu'alaikum%20Ibu%20Siti%20Rochmah,%20saya%20konfirmasi%20transfer%20acara%20Maulid%20Akbar%20MTNH" target="_blank" rel="noopener noreferrer" class="px-1.5 py-0.5 rounded bg-emerald-600/35 hover:bg-emerald-600/50 text-emerald-300 text-[7px] font-bold border border-emerald-500/40 flex items-center gap-1 transition">
-                      <i class="fa-brands fa-whatsapp text-[8px]"></i>
+                    <a href="https://wa.me/6289662960743?text=Assalamu'alaikum%20Ibu%20Siti%20Rochmah,%20saya%20konfirmasi%20transfer%20acara%20Maulid%20Akbar%20MTNH" target="_blank" rel="noopener noreferrer" class="px-1.5 py-0.5 rounded bg-emerald-600/35 hover:bg-emerald-600/50 text-emerald-300 text-[6.5px] font-bold border border-emerald-500/40 flex items-center gap-1 transition">
+                      <i class="fa-brands fa-whatsapp text-[7.5px]"></i>
                       <span>Bendahara MTNH</span>
                     </a>
                   </div>
@@ -823,10 +855,10 @@
                   </div>
 
                   <div class="text-center px-1">
-                    <p class="text-[10px] font-black tracking-[0.2em] text-white font-cinzel uppercase drop-shadow">
+                    <p class="text-[9.5px] font-black tracking-[0.2em] text-white font-cinzel uppercase drop-shadow">
                       LIVE STREAMING
                     </p>
-                    <p class="text-[7.5px] font-semibold text-red-100 tracking-wider leading-none">YouTube MTQL Official</p>
+                    <p class="text-[7px] font-semibold text-red-100 tracking-wider leading-none">YouTube MTQL Official</p>
                   </div>
 
                   <div class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white group-hover:scale-110 transition-transform shrink-0">
@@ -841,7 +873,7 @@
 
         </div>
 
-        <!-- 6 Tab Bawah Khusus Halaman 7 -->
+        <!-- 6 Tab Bawah Khusus Slide 7 -->
         <div class="absolute bottom-0 left-0 right-0 z-20 flex bg-[#cad49e] border-t border-[#9ea96e]/60" style="height: 4.5%;">
           <button onclick="pindahSlide(2)" class="w-[16.6%] h-full flex items-center justify-center bg-[#eae3d5] hover:bg-white border-r border-[#baa889] text-[7px] sm:text-[7.5px] font-bold font-cinzel text-[#382d1c] transition cursor-pointer">MUQODDIMAH</button>
           <button onclick="pindahSlide(3)" class="w-[16.6%] h-full flex items-center justify-center bg-[#eae3d5] hover:bg-white border-r border-[#baa889] text-[7px] sm:text-[7.5px] font-bold font-cinzel text-[#382d1c] transition cursor-pointer">UNDANGAN</button>
@@ -860,10 +892,10 @@
     <!-- SISTEM NAVIGASI ASLI: AREA SENTUH TRANSPARAN FRAME UTAMA       -->
     <!-- ============================================================== -->
     
-    <!-- Tombol Beranda Kiri Atas (Menutupi Gambar Asli "KEMBALI KE LAMAN UTAMA") -->
+    <!-- Tombol Beranda Kiri Atas (Menutupi Tulisan Asli "KEMBALI KE LAMAN UTAMA") -->
     <button onclick="kembaliKeCover()" class="absolute z-30 cursor-pointer bg-transparent" style="top: 1.2%; left: 2%; width: 34%; height: 3.5%;" title="Kembali ke Cover"></button>
     
-    <!-- Panah Kiri (Menutupi Gambar Asli Panah Kiri) -->
+    <!-- Panah Kiri (Menutupi Gambar Asli Panah Hijau Kiri) -->
     <button onclick="prevSlide()" class="absolute z-30 cursor-pointer bg-transparent" style="top: 45%; left: 0%; width: 14%; height: 8.5%;" title="Lembar Sebelumnya"></button>
     
     <!-- Panah Kanan (Menutupi Gambar Asli Panah Merah Kanan) -->
@@ -885,9 +917,10 @@
   <!-- DATABASE RESMI 500 NAMA TAMU & LOGIKA SISTEM   -->
   <!-- ============================================== -->
   <script>
+    // Bersihkan sesi agar setiap kunjungan baru wajib memasukkan nama lengkap
     localStorage.removeItem('maulid_vip_guest');
 
-    // Database VIP 500 slot (termasuk 356 nama asli + cadangan)
+    // DATABASE RESMI 500 TAMU KEHORMATAN VIP (NO. 001 S/D 500)
     const databaseVIP = [
       { no: "001", nama: "Elisani" },
       { no: "002", nama: "Sulastri" },
@@ -942,7 +975,7 @@
       { no: "051", nama: "Nurhayati Haris" },
       { no: "052", nama: "Katmini" },
       { no: "053", nama: "Itoh Masithoh" },
-      { no: "054", lang: "id", nama: "lilis" },
+      { no: "054", nama: "lilis" },
       { no: "055", nama: "saidah" },
       { no: "056", nama: "tugiyati" },
       { no: "057", nama: "Siti rohani" },
@@ -1042,7 +1075,7 @@
       { no: "151", nama: "Afiyah Najihah" },
       { no: "152", nama: "Hastarini Purwaninhtias" },
       { no: "153", nama: "Zakiyah" },
-      { no: "154", nama: "Siti Halimah" },
+      { no: "154", lang: "id", nama: "Siti Halimah" },
       { no: "155", nama: "Yana" },
       { no: "156", nama: "Suryati" },
       { no: "157", nama: "Najwa Khaira Wilda" },
@@ -1345,7 +1378,7 @@
       { no: "454", nama: "TAMU VIP 454" },
       { no: "455", nama: "TAMU VIP 455" },
       { no: "456", nama: "TAMU VIP 456" },
-      { no: "457", nama: "TAMU VIP 457" },
+      { no: "457", nama: "TAMU VIP 458" },
       { no: "458", nama: "TAMU VIP 458" },
       { no: "459", nama: "TAMU VIP 459" },
       { no: "460", nama: "TAMU VIP 460" },
@@ -1432,6 +1465,7 @@
       }
     }
 
+    // Verifikasi Ketat Nama Lengkap Tamu
     function bersihkanNama(str) {
       return str.toLowerCase()
                 .replace(/[^a-z0-9\s]/g, '')
@@ -1441,7 +1475,7 @@
 
     function ambilNamaInti(fullName) {
       return fullName.toLowerCase()
-                     .replace(/\b(ustadzah|ustadz|ibu|bapak|bpk|hj|haji|hajjah)\b/gi, '')
+                     .replace(/\b(ustadzah|ibu|hj|)\b/gi, '')
                      .replace(/[^a-z0-9\s]/g, '')
                      .trim()
                      .replace(/\s+/g, ' ');
@@ -1473,12 +1507,12 @@
         closeAuthModal();
         lanjutBukaUndangan();
       } else {
-        authErrorMsg.innerText = "Nama tidak terdaftar dalam undangan VIP. Harap masukkan nama lengkap Anda.";
+        authErrorMsg.innerText = "Nama tidak terdaftar dalam undangan VIP. Harap masukkan nama lengkap.";
         authErrorMsg.classList.remove('hidden');
       }
     }
 
-    // Pemutar Sholawat & Pembuka Amplop
+    // Kontrol Audio & Buka Amplop Undangan
     const audio = document.getElementById('audioPlayer');
     const musicHUD = document.getElementById('musicHUD');
     const musicIcon = document.getElementById('musicIcon');
@@ -1522,7 +1556,7 @@
         console.log("Autoplay ditahan browser:", err);
       });
 
-      // Buka langsung ke Slide 1 (UNDANGAN MAULID VVIP.png tampilan penuh)
+      // Langsung menuju ke Halaman 1 (Tampilan Penuh Preview Amplop)
       pindahSlide(1, true);
     }
 
@@ -1560,7 +1594,7 @@
       musicIcon.classList.remove('spin-active');
     }
 
-    // Logika Pembalik Halaman 3D Terintegrasi 7 Slide
+    // Logika Pembalik Lembaran Kertas Lemas 3D (Total 7 Slide Terintegrasi)
     let currentSlide = 1;
     const totalSlides = 7;
 
@@ -1662,7 +1696,7 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    // Dukungan Swipe Layar Sentuh Smartphone
+    // Dukungan Usap Layar Sentuh HP (Swipe Gesture)
     let touchStartX = 0;
     let touchEndX = 0;
 
@@ -1676,7 +1710,7 @@
       if (touchEndX > touchStartX + 35) prevSlide();
     }, false);
 
-    // Engine Partikel: Kelopak Bunga & Kilau Emas
+    // Engine Partikel: Kelopak Mawar & Kilau Cahaya
     const canvas = document.getElementById('fxCanvas');
     const ctx = canvas.getContext('2d');
 
