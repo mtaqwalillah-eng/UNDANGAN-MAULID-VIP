@@ -475,7 +475,7 @@
           Nama tidak terdaftar dalam undangan VIP. Harap masukkan nama lengkap Anda.
         </p>
 
-        <button onclick="verifikasiNamaTamu()" class="luxury-btn w-full py-2.5 rounded-xl bg-gradient-to-r from-[#70151c] via-[#8c1822] to-[#70151c] text-amber-100 font-cinzel font-bold text-xs tracking-widest border border-amber-400/80 shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
+        <button id="btnBukaUndangan" onclick="verifikasiNamaTamu()" class="luxury-btn w-full py-2.5 rounded-xl bg-gradient-to-r from-[#70151c] via-[#8c1822] to-[#70151c] text-amber-100 font-cinzel font-bold text-xs tracking-widest border border-amber-400/80 shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
           <i class="fa-solid fa-envelope-open-text text-amber-300"></i>
           <span>BUKA UNDANGAN RESMI</span>
         </button>
@@ -588,7 +588,7 @@
     <!-- ============================================== -->
     <div class="slide-viewport">
       
-      <!-- Slide 1: PREVIEW AMPLOP TAMPILAN PENUH (UNDANGAN MAULID VVIP.png) -->
+      <!-- Slide 1: PREVIEW AMPLOP TAMPILAN PENUH -->
       <div id="slide-1" class="page-slide active">
         <img 
           src="UNDANGAN MAULID VVIP.png?v=fresh" 
@@ -604,7 +604,7 @@
         <div class="paper-curl-shade"></div>
       </div>
 
-      <!-- Slide 3: HALAMAN UNDANGAN DENGAN NAMA TAMU & NOMOR VIP (UNDANGAN.png) -->
+      <!-- Slide 3: HALAMAN UNDANGAN DENGAN NAMA TAMU & NOMOR VIP -->
       <div id="slide-3" class="page-slide">
         <img src="UNDANGAN.png?v=fresh" onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='UNDANGAN MAULID VVIP.png?v=fresh';}" alt="Undangan VIP" class="w-full h-full object-fill">
         
@@ -615,7 +615,7 @@
           </span>
         </div>
 
-        <!-- Wadah Teks Nama Tamu (Dinamis Sesuai Panjang Huruf) -->
+        <!-- Wadah Teks Nama Tamu -->
         <div class="absolute z-20 flex items-center justify-center pointer-events-none" style="top: 74.4%; left: 22.5%; width: 74.0%; height: 5.4%;">
           <div class="bg-white/95 border border-stone-300/80 shadow-md rounded-full px-5 py-1 max-w-full flex items-center justify-center">
             <span id="slideGuestName" class="text-[10.5px] sm:text-[12px] font-black text-[#1a252f] font-cinzel uppercase tracking-wider text-center whitespace-nowrap overflow-hidden text-ellipsis"></span>
@@ -624,7 +624,7 @@
         <div class="paper-curl-shade"></div>
       </div>
 
-      <!-- Slide 4: ACARA.png (Jadwal, Countdown Real-Time, & Peta) -->
+      <!-- Slide 4: ACARA.png -->
       <div id="slide-4" class="page-slide">
         <img src="ACARA.png?v=fresh" alt="Acara" class="w-full h-full object-fill">
 
@@ -889,16 +889,10 @@
     </div>
 
     <!-- ============================================================== -->
-    <!-- SISTEM NAVIGASI ASLI: AREA SENTUH TRANSPARAN FRAME UTAMA       -->
+    <!-- SISTEM NAVIGASI: AREA SENTUH TRANSPARAN FRAME UTAMA            -->
     <!-- ============================================================== -->
-    
-    <!-- Tombol Beranda Kiri Atas -->
     <button onclick="kembaliKeCover()" class="absolute z-30 cursor-pointer bg-transparent" style="top: 1.2%; left: 2%; width: 34%; height: 3.5%;" title="Kembali ke Cover"></button>
-    
-    <!-- Panah Kiri -->
     <button onclick="prevSlide()" class="absolute z-30 cursor-pointer bg-transparent" style="top: 45%; left: 0%; width: 14%; height: 8.5%;" title="Lembar Sebelumnya"></button>
-    
-    <!-- Panah Kanan -->
     <button onclick="nextSlide()" class="absolute z-30 cursor-pointer bg-transparent" style="top: 45%; right: 0%; width: 14%; height: 8.5%;" title="Lembar Berikutnya"></button>
 
     <!-- 6 Tab Navigasi Bawah Transparan -->
@@ -913,15 +907,20 @@
 
   </main>
 
-  <!-- ============================================== -->
-  <!-- DATABASE RESMI 500 NAMA TAMU & LOGIKA SISTEM   -->
-  <!-- ============================================== -->
+  <!-- ============================================================== -->
+  <!-- SINKRONISASI GOOGLE SHEETS & LOGIKA SISTEM                     -->
+  <!-- ============================================================== -->
   <script>
-    // Bersihkan sesi agar setiap kunjungan baru wajib memasukkan nama lengkap
     localStorage.removeItem('maulid_vip_guest');
 
-    // DATABASE RESMI 500 TAMU KEHORMATAN VIP (NO. 001 S/D 500)
-    const databaseVIP = [
+    // KONFIGURASI GOOGLE SPREADSHEET RESMI
+    const SPREADSHEET_ID = '1-jgBw-gWk-451E_1mCoeqYjV6-2d-N_90efBnDUwSK4';
+    const SHEET_GID = '1722296103'; // Tab "Form Responses 2"
+    let isFetchingSheet = false;
+    let sheetFetchPromise = null;
+
+    // Database cadangan bawaan (fallback lokal jika koneksi tamu lambat)
+    let databaseVIP = [
       { no: "001", nama: "Siti Rohayati (neneng)" },
       { no: "002", nama: "Suryani ( nani )" },
       { no: "003", nama: "BUNDA INDAH" },
@@ -971,458 +970,71 @@
       { no: "047", nama: "KARSINI" },
       { no: "048", nama: "Zubaidah" },
       { no: "049", nama: "Sawiyah" },
-      { no: "050", nama: "Liya" },
-      { no: "051", nama: "Suryana" },
-      { no: "052", nama: "WIDYAWATI" },
-      { no: "053", nama: "Sri susanti" },
-      { no: "054", nama: "Siti Maya" },
-      { no: "055", nama: "Siti sahumi" },
-      { no: "056", nama: "Asmayati" },
-      { no: "057", nama: "farida" },
-      { no: "058", nama: "Aan Tarnita" },
-      { no: "059", nama: "Iroh rohayati" },
-      { no: "060", nama: "Rohme Waty" },
-      { no: "061", nama: "Hj maryam" },
-      { no: "062", nama: "Ade Roslina" },
-      { no: "063", nama: "Yulfrida" },
-      { no: "064", nama: "Maryati" },
-      { no: "065", nama: "Retno fatmawati" },
-      { no: "066", nama: "nurlela" },
-      { no: "067", nama: "Hj Sri rahayu" },
-      { no: "068", nama: "VOERMILA" },
-      { no: "069", nama: "Kusnita herawati" },
-      { no: "070", nama: "Putri nur mahmudah" },
-      { no: "071", nama: "Putri MilaDia AssyaZiliyah" },
-      { no: "072", nama: "Husna Saabirah" },
-      { no: "073", nama: "Syanas Nurhilaliyah" },
-      { no: "074", nama: "Ushwatun Nurhasanah" },
-      { no: "075", nama: "Annisa nurafifah" },
-      { no: "076", nama: "Naura Nazihah" },
-      { no: "077", nama: "Diyanah Salsabila" },
-      { no: "078", nama: "Dwi Ramadhany" },
-      { no: "079", nama: "Lara Juliani Nasution" },
-      { no: "080", nama: "Haniyah Sa'diyah Sabhara" },
-      { no: "081", nama: "Khoirunnisa" },
-      { no: "082", nama: "Nuraeni" },
-      { no: "083", nama: "Armadiyanti" },
-      { no: "084", nama: "Halimatussa'diyah" },
-      { no: "085", nama: "Rahma saniyati" },
-      { no: "086", nama: "ATIK ROHATI" },
-      { no: "087", nama: "durotun nakiah" },
-      { no: "088", nama: "zulfa nur habibah" },
-      { no: "089", nama: "Dahlia Ekanada" },
-      { no: "090", nama: "Yumaroh" },
-      { no: "091", nama: "Maratus Sadiah" },
-      { no: "092", nama: "Pungky Utami" },
-      { no: "093", nama: "Kasinah" },
-      { no: "094", nama: "Fitriana Lestari" },
-      { no: "095", nama: "Putri Khairatul Uzma" },
-      { no: "096", nama: "Umi Nur Solehah" },
-      { no: "097", nama: "Zuhriyah" },
-      { no: "098", nama: "Salbiyah" },
-      { no: "099", nama: "Ruqoyyah" },
-      { no: "100", nama: "Hj. Masruroh" },
-      { no: "101", nama: "Putri Fadilatul Barokah" },
-      { no: "102", nama: "Juni Lestari" },
-      { no: "103", nama: "Siti Athiyah" },
-      { no: "104", nama: "MURTIYASTUTI" },
-      { no: "105", nama: "Fauziah Rahmi" },
-      { no: "106", nama: "Ratna Sri Rejeki" },
-      { no: "107", nama: "Kharidah alyyatul rifa" },
-      { no: "108", nama: "UMI FATIMAH" },
-      { no: "109", nama: "Ustazah Neneng.salmia" },
-      { no: "110", nama: "Nurhasanah" },
-      { no: "111", nama: "Syifa Paujiyah" },
-      { no: "112", nama: "HENNI KUSUMAWARDANI" },
-      { no: "113", nama: "Slamet Sri Rahayu" },
-      { no: "114", nama: "Savitri Nur Hasanah" },
-      { no: "115", nama: "Fajrin Qorina" },
-      { no: "116", nama: "Elisani" },
-      { no: "117", nama: "Sulastri" },
-      { no: "118", nama: "Dyah Yuliati" },
-      { no: "119", nama: "Nurlela" },
-      { no: "120", nama: "Mujianti" },
-      { no: "121", nama: "Maesaroh" },
-      { no: "122", nama: "Hj. Sri Hartuti" },
-      { no: "123", nama: "hj Siti zahro" },
-      { no: "124", nama: "Suyatni" },
-      { no: "125", nama: "Ngasiem" },
-      { no: "126", nama: "Ratna wati" },
-      { no: "127", nama: "hj sunarsih" },
-      { no: "128", nama: "Yatinah" },
-      { no: "129", nama: "Euis" },
-      { no: "130", nama: "muni" },
-      { no: "131", nama: "asanih" },
-      { no: "132", nama: "HJ. Sa'amah" },
-      { no: "133", nama: "Khotimah" },
-      { no: "134", nama: "Yuliatus sobah" },
-      { no: "135", nama: "Bu Tini Wahyu Ningrum" },
-      { no: "136", nama: "Bu Anisah" },
-      { no: "137", nama: "Umi djubaidah" },
-      { no: "138", nama: "Bu Kasiyatih" },
-      { no: "139", nama: "Suwartini" },
-      { no: "140", nama: "Martini" },
-      { no: "141", nama: "nani sutirah" },
-      { no: "142", nama: "mulyati" },
-      { no: "143", nama: "ustadzah Suwarsih" },
-      { no: "144", nama: "Hj. Armani" },
-      { no: "145", nama: "sutiyem" },
-      { no: "146", nama: "mimin jasmini" },
-      { no: "147", nama: "nurhayati" },
-      { no: "148", nama: "Hj nurlaela" },
-      { no: "149", nama: "iis samsiyah" },
-      { no: "150", nama: "Sundari mardan" },
-      { no: "151", nama: "sri widiyati" },
-      { no: "152", nama: "sulastri" },
-      { no: "153", nama: "Warsiti" },
-      { no: "154", nama: "maryani" },
-      { no: "155", nama: "aam nurasia" },
-      { no: "156", nama: "Hj. Suryani" },
-      { no: "157", nama: "Bu Hj Rahayu" },
-      { no: "158", nama: "nurhayati" },
-      { no: "159", nama: "Rita andriani" },
-      { no: "160", nama: "Ati soleh" },
-      { no: "161", nama: "Kamalia" },
-      { no: "162", nama: "Sutini" },
-      { no: "163", nama: "Ununsri" },
-      { no: "164", nama: "sri mulyani" },
-      { no: "165", nama: "Nurhayati Haris" },
-      { no: "166", nama: "Katmini" },
-      { no: "167", nama: "Itoh Masithoh" },
-      { no: "168", nama: "lilis" },
-      { no: "169", nama: "saidah" },
-      { no: "170", nama: "tugiyati" },
-      { no: "171", nama: "Siti rohani" },
-      { no: "172", nama: "Resti Fauziah" },
-      { no: "173", nama: "Noviyanti" },
-      { no: "174", nama: "Lidar sari" },
-      { no: "175", nama: "Eko rokhayati" },
-      { no: "176", nama: "Siti marliyah" },
-      { no: "177", nama: "Hartini" },
-      { no: "178", nama: "Jumiyati" },
-      { no: "179", nama: "Hj katini" },
-      { no: "180", nama: "Darsini" },
-      { no: "181", nama: "kasiyati" },
-      { no: "182", nama: "Sarnah" },
-      { no: "183", nama: "Siti Hawa" },
-      { no: "184", nama: "darwati" },
-      { no: "185", nama: "Saroja" },
-      { no: "186", nama: "Jamilah" },
-      { no: "187", nama: "Ninik sumartini" },
-      { no: "188", nama: "Neneng Hasanah" },
-      { no: "189", nama: "Rosani" },
-      { no: "190", nama: "Raeihana" },
-      { no: "191", nama: "Hj Sri Rahayu" },
-      { no: "192", nama: "Rukmini" },
-      { no: "193", nama: "Siti Julaeha" },
-      { no: "194", nama: "Fatmeh" },
-      { no: "195", nama: "Neneng maryati(H.Jaya)" },
-      { no: "196", nama: "Masenun" },
-      { no: "197", nama: "Saidah" },
-      { no: "198", nama: "Sariyati" },
-      { no: "199", nama: "suraida" },
-      { no: "200", nama: "titin nurbaetin" },
-      { no: "201", nama: "Siti Rohani" },
-      { no: "202", nama: "ida laila" },
-      { no: "203", nama: "aminah" },
-      { no: "204", nama: "Dede Atikah" },
-      { no: "205", nama: "satinem" },
-      { no: "206", nama: "Suryana" },
-      { no: "207", nama: "Nuryani" },
-      { no: "208", nama: "Zulvira Siti Adetiya" },
-      { no: "209", nama: "Hj. Acha Sa'ani" },
-      { no: "210", nama: "Tri Setyo utami" },
-      { no: "211", nama: "Sriyani" },
-      { no: "212", nama: "Mahra" },
-      { no: "213", nama: "Ananda Shafira" },
-      { no: "214", nama: "Nuryanti" },
-      { no: "215", nama: "Juhaenengsih" },
-      { no: "216", nama: "Partinah" },
-      { no: "217", nama: "Siti rohmah( pinang Ranti)" },
-      { no: "218", nama: "Aulia salsabila" },
-      { no: "219", nama: "Zulfatinoor" },
-      { no: "220", nama: "Syarifah Hikmah bintu Hbb Hasan Al Bahar" },
-      { no: "221", nama: "Ibu Ida Fitriyani" },
-      { no: "222", nama: "Reni M" },
-      { no: "223", nama: "Devi nurlela" },
-      { no: "224", nama: "Didah faridah rt 14" },
-      { no: "225", nama: "Siti mawadah" },
-      { no: "226", nama: "Ropikoh ( H. malik)" },
-      { no: "227", nama: "Dharmawati ( H. malik)" },
-      { no: "228", nama: "Fitri Nurmala (H. malik)" },
-      { no: "229", nama: "Helda sidrap latoaha rt14" },
-      { no: "230", nama: "Neneng kholifah (H.saprin)" },
-      { no: "231", nama: "Sulistiowati" },
-      { no: "232", nama: "Rukayah" },
-      { no: "233", nama: "Dwi Agustina rahayu" },
-      { no: "234", nama: "Winarni" },
-      { no: "235", nama: "Ana Sri Wulandari" },
-      { no: "236", nama: "Siti Iriani" },
-      { no: "237", nama: "Rohati" },
-      { no: "238", nama: "Supin" },
-      { no: "239", nama: "Pardjiyah" },
-      { no: "240", nama: "Murtinjung" },
-      { no: "241", nama: "Nurhasanah" },
-      { no: "242", nama: "Ibu Halimah" },
-      { no: "243", nama: "Erna" },
-      { no: "244", nama: "Ibu Rogaiyah" },
-      { no: "245", nama: "Ninik suparnik" },
-      { no: "246", nama: "Hj.Arfiah" },
-      { no: "247", nama: "Ibu cici" },
-      { no: "248", nama: "Maimunah" },
-      { no: "249", nama: "Ernawati" },
-      { no: "250", nama: "Wiyety sukaeni" },
-      { no: "251", nama: "Lina Muflihah" },
-      { no: "252", nama: "Siti Miftahurroifah" },
-      { no: "253", nama: "Hj Lily Rita Fitri" },
-      { no: "254", nama: "Siti Nuryani" },
-      { no: "255", nama: "Titis Puji Rahayu" },
-      { no: "256", nama: "Sopiyah" },
-      { no: "257", nama: "Huzaimatul Hilaliyah" },
-      { no: "258", nama: "Siti Nurhasanah" },
-      { no: "259", nama: "Upi Mardawati" },
-      { no: "260", nama: "Daryati" },
-      { no: "261", nama: "Siti Masruroh" },
-      { no: "262", nama: "Maisaroh" },
-      { no: "263", nama: "Ibu djaini" },
-      { no: "264", nama: "Afiyah Najihah" },
-      { no: "265", nama: "Hastarini Purwaninhtias" },
-      { no: "266", nama: "Zakiyah" },
-      { no: "267", nama: "Siti Halimah" },
-      { no: "268", nama: "Yana" },
-      { no: "269", nama: "Suryati" },
-      { no: "270", nama: "Najwa Khaira Wilda" },
-      { no: "271", nama: "Aminah" },
-      { no: "272", nama: "Hj. Mursyidah" },
-      { no: "273", nama: "Kusnati" },
-      { no: "274", nama: "Hj Marfuah" },
-      { no: "275", nama: "Astri alamsari" },
-      { no: "276", nama: "Sunarti" },
-      { no: "277", nama: "Catur kartika" },
-      { no: "278", nama: "Mimi maryani" },
-      { no: "279", nama: "Siti aminah" },
-      { no: "280", nama: "Siti Sovia lestari" },
-      { no: "281", nama: "sri sudarmiyati" },
-      { no: "282", nama: "Zunny Dwi supriati" },
-      { no: "283", nama: "waskirah" },
-      { no: "284", nama: "Siti wardah" },
-      { no: "285", nama: "Hairiroh" },
-      { no: "286", nama: "Tedriya" },
-      { no: "287", nama: "Alyssa Zahra Kamila" },
-      { no: "288", nama: "Siti Aminah" },
-      { no: "289", nama: "Siti Mariam" },
-      { no: "290", nama: "Ibu Namih" },
-      { no: "291", nama: "Hj marsiyeh" },
-      { no: "292", nama: "Siti Maisaroh" },
-      { no: "293", nama: "Maryatih" },
-      { no: "294", nama: "Ibu nenden" },
-      { no: "295", nama: "Nayaka Putri jamiela" },
-      { no: "296", nama: "Nurulia Maulidina" },
-      { no: "297", nama: "eni kusrini" },
-      { no: "298", nama: "Sifa Fauziah" },
-      { no: "299", nama: "lasmini" },
-      { no: "300", nama: "nurlailah H.salim" },
-      { no: "301", nama: "Idah rozillah" },
-      { no: "302", nama: "Ilma Amalia" },
-      { no: "303", nama: "Oksianti" },
-      { no: "304", nama: "Mardiana lilik sari" },
-      { no: "305", nama: "Siti norma" },
-      { no: "306", nama: "Umi Kalsum" },
-      { no: "307", nama: "Maryati" },
-      { no: "308", nama: "Sainah" },
-      { no: "309", nama: "Misiyem" },
-      { no: "310", nama: "Yanny famellia RW 11" },
-      { no: "311", nama: "Ustadzh hj Atikah" },
-      { no: "312", nama: "Hj Sumiati" },
-      { no: "313", nama: "Endang Komalasari" },
-      { no: "314", nama: "Rochimah" },
-      { no: "315", nama: "Nur Aini Nailun" },
-      { no: "316", nama: "Chairunnisa Yusuf" },
-      { no: "317", nama: "Siti khadijah" },
-      { no: "318", nama: "Puji astuti" },
-      { no: "319", nama: "Asini" },
-      { no: "320", nama: "Ruwiyah" },
-      { no: "321", nama: "Siti Zubaidah" },
-      { no: "322", nama: "Iyah" },
-      { no: "323", nama: "Muchayaroh" },
-      { no: "324", nama: "Rita" },
-      { no: "325", nama: "Maimunah" },
-      { no: "326", nama: "Anis watin" },
-      { no: "327", nama: "wiwik diana" },
-      { no: "328", nama: "Siti Fatimah AR, S Ag" },
-      { no: "329", nama: "Hj masnun" },
-      { no: "330", nama: "Nur Khabibah" },
-      { no: "331", nama: "Sumartini" },
-      { no: "332", nama: "Elly Rachmi" },
-      { no: "333", nama: "Suhana" },
-      { no: "334", nama: "Mayani" },
-      { no: "335", nama: "Rukiyah" },
-      { no: "336", nama: "Normani" },
-      { no: "337", nama: "ibu Umamah,cimel" },
-      { no: "338", nama: "ibu iyut,cimel" },
-      { no: "339", nama: "ibu nurjanah,cimel" },
-      { no: "340", nama: "sujiyanti" },
-      { no: "341", nama: "zuharoh" },
-      { no: "342", nama: "Hj samyati ma'ruf" },
-      { no: "343", nama: "heni suryani" },
-      { no: "344", nama: "riyani" },
-      { no: "345", nama: "ita rosita" },
-      { no: "346", nama: "Aqila Ainul Afia" },
-      { no: "347", nama: "Tata Widia Husodo" },
-      { no: "348", nama: "Fathii Masyunna Hidayat" },
-      { no: "349", nama: "Siti nurkasih" },
-      { no: "350", nama: "hj Chaeroni" },
-      { no: "351", nama: "Zullaekhah" },
-      { no: "352", nama: "Lani nurlaila" },
-      { no: "353", nama: "Selawati" },
-      { no: "354", nama: "Khodijah" },
-      { no: "355", nama: "Eti R" },
-      { no: "356", nama: "Ibu Diyem" },
-      { no: "357", nama: "Ibu Nurlaila" },
-      { no: "358", nama: "Ibu Dian" },
-      { no: "359", nama: "Ika Septina" },
-      { no: "360", nama: "Herawati" },
-      { no: "361", nama: "Siti juriah" },
-      { no: "362", nama: "noor hayati" },
-      { no: "363", nama: "majuroh" },
-      { no: "364", nama: "Ibu Suminem" },
-      { no: "365", nama: "Kesya Salsabila" },
-      { no: "366", nama: "Susilawati" },
-      { no: "367", nama: "ustz Hj Siti maryam" },
-      { no: "368", nama: "Romzah" },
-      { no: "369", nama: "Suwarni" },
-      { no: "370", nama: "HANAYA NUR ATQIYAA RAHMAN" },
-      { no: "371", nama: "Khodijah Nur Mufidah" },
-      { no: "372", nama: "Salsabillah Ramadhani" },
-      { no: "373", nama: "Siti Aisyah Inayah" },
-      { no: "374", nama: "Azkia Fathimah" },
-      { no: "375", nama: "Fatimah Azzahra Zulkarnain" },
-      { no: "376", nama: "Defi Irmawati" },
-      { no: "377", nama: "Sadiyah" },
-      { no: "378", nama: "Zahra" },
-      { no: "379", nama: "Zaenab Novianti" },
-      { no: "380", nama: "Devy Octriananda" },
-      { no: "381", nama: "Suparti" },
-      { no: "382", nama: "Suyatmi" },
-      { no: "383", nama: "Zahira sefriyarni rahayu" },
-      { no: "384", nama: "Annaya Ramadhani Yusuf" },
-      { no: "385", nama: "Neneng Hanifah" },
-      { no: "386", nama: "Ustadzah Julaeha" },
-      { no: "387", nama: "Ety Haryati" },
-      { no: "388", nama: "Ustadzah Hj Siti Robiyatul adawiyah" },
-      { no: "389", nama: "Hj Empen" },
-      { no: "390", nama: "Siti Dzuariah" },
-      { no: "391", nama: "Lanasari" },
-      { no: "392", nama: "Maesaroh" },
-      { no: "393", nama: "Nina Yuliana" },
-      { no: "394", nama: "TAMU VIP 394" },
-      { no: "395", nama: "TAMU VIP 395" },
-      { no: "396", nama: "TAMU VIP 396" },
-      { no: "397", nama: "TAMU VIP 397" },
-      { no: "398", nama: "TAMU VIP 398" },
-      { no: "399", nama: "TAMU VIP 399" },
-      { no: "400", nama: "TAMU VIP 400" },
-      { no: "401", nama: "TAMU VIP 401" },
-      { no: "402", nama: "TAMU VIP 402" },
-      { no: "403", nama: "TAMU VIP 403" },
-      { no: "404", nama: "TAMU VIP 404" },
-      { no: "405", nama: "TAMU VIP 405" },
-      { no: "406", nama: "TAMU VIP 406" },
-      { no: "407", nama: "TAMU VIP 407" },
-      { no: "408", nama: "TAMU VIP 408" },
-      { no: "409", nama: "TAMU VIP 409" },
-      { no: "410", nama: "TAMU VIP 410" },
-      { no: "411", nama: "TAMU VIP 411" },
-      { no: "412", nama: "TAMU VIP 412" },
-      { no: "413", nama: "TAMU VIP 413" },
-      { no: "414", nama: "TAMU VIP 414" },
-      { no: "415", nama: "TAMU VIP 415" },
-      { no: "416", nama: "TAMU VIP 416" },
-      { no: "417", nama: "TAMU VIP 417" },
-      { no: "418", nama: "TAMU VIP 418" },
-      { no: "419", nama: "TAMU VIP 419" },
-      { no: "420", nama: "TAMU VIP 420" },
-      { no: "421", nama: "TAMU VIP 421" },
-      { no: "422", nama: "TAMU VIP 422" },
-      { no: "423", nama: "TAMU VIP 423" },
-      { no: "424", nama: "TAMU VIP 424" },
-      { no: "425", nama: "TAMU VIP 425" },
-      { no: "426", nama: "TAMU VIP 426" },
-      { no: "427", nama: "TAMU VIP 427" },
-      { no: "428", nama: "TAMU VIP 428" },
-      { no: "429", nama: "TAMU VIP 429" },
-      { no: "430", nama: "TAMU VIP 430" },
-      { no: "431", nama: "TAMU VIP 431" },
-      { no: "432", nama: "TAMU VIP 432" },
-      { no: "433", nama: "TAMU VIP 433" },
-      { no: "434", nama: "TAMU VIP 434" },
-      { no: "435", nama: "TAMU VIP 435" },
-      { no: "436", nama: "TAMU VIP 436" },
-      { no: "437", nama: "TAMU VIP 437" },
-      { no: "438", nama: "TAMU VIP 438" },
-      { no: "439", nama: "TAMU VIP 439" },
-      { no: "440", nama: "TAMU VIP 440" },
-      { no: "441", nama: "TAMU VIP 441" },
-      { no: "442", nama: "TAMU VIP 442" },
-      { no: "443", nama: "TAMU VIP 443" },
-      { no: "444", nama: "TAMU VIP 444" },
-      { no: "445", nama: "TAMU VIP 445" },
-      { no: "446", nama: "TAMU VIP 446" },
-      { no: "447", nama: "TAMU VIP 447" },
-      { no: "448", nama: "TAMU VIP 448" },
-      { no: "449", nama: "TAMU VIP 449" },
-      { no: "450", nama: "TAMU VIP 450" },
-      { no: "451", nama: "TAMU VIP 451" },
-      { no: "452", nama: "TAMU VIP 452" },
-      { no: "453", nama: "TAMU VIP 453" },
-      { no: "454", nama: "TAMU VIP 454" },
-      { no: "455", nama: "TAMU VIP 455" },
-      { no: "456", nama: "TAMU VIP 456" },
-      { no: "457", nama: "TAMU VIP 457" },
-      { no: "458", nama: "TAMU VIP 458" },
-      { no: "459", nama: "TAMU VIP 459" },
-      { no: "460", nama: "TAMU VIP 460" },
-      { no: "461", nama: "TAMU VIP 461" },
-      { no: "462", nama: "TAMU VIP 462" },
-      { no: "463", nama: "TAMU VIP 463" },
-      { no: "464", nama: "TAMU VIP 464" },
-      { no: "465", nama: "TAMU VIP 465" },
-      { no: "466", nama: "TAMU VIP 466" },
-      { no: "467", nama: "TAMU VIP 467" },
-      { no: "468", nama: "TAMU VIP 468" },
-      { no: "469", nama: "TAMU VIP 469" },
-      { no: "470", nama: "TAMU VIP 470" },
-      { no: "471", nama: "TAMU VIP 471" },
-      { no: "472", nama: "TAMU VIP 472" },
-      { no: "473", nama: "TAMU VIP 473" },
-      { no: "474", nama: "TAMU VIP 474" },
-      { no: "475", nama: "TAMU VIP 475" },
-      { no: "476", nama: "TAMU VIP 476" },
-      { no: "477", nama: "TAMU VIP 477" },
-      { no: "478", nama: "TAMU VIP 478" },
-      { no: "479", nama: "TAMU VIP 479" },
-      { no: "480", nama: "TAMU VIP 480" },
-      { no: "481", nama: "TAMU VIP 481" },
-      { no: "482", nama: "TAMU VIP 482" },
-      { no: "483", nama: "TAMU VIP 483" },
-      { no: "484", nama: "TAMU VIP 484" },
-      { no: "485", nama: "TAMU VIP 485" },
-      { no: "486", nama: "TAMU VIP 486" },
-      { no: "487", nama: "TAMU VIP 487" },
-      { no: "488", nama: "TAMU VIP 488" },
-      { no: "489", nama: "TAMU VIP 489" },
-      { no: "490", nama: "TAMU VIP 490" },
-      { no: "491", nama: "TAMU VIP 491" },
-      { no: "492", nama: "TAMU VIP 492" },
-      { no: "493", nama: "TAMU VIP 493" },
-      { no: "494", nama: "TAMU VIP 494" },
-      { no: "495", nama: "TAMU VIP 495" },
-      { no: "496", nama: "TAMU VIP 496" },
-      { no: "497", nama: "TAMU VIP 497" },
-      { no: "498", nama: "TAMU VIP 498" },
-      { no: "499", nama: "TAMU VIP 499" },
-      { no: "500", nama: "TAMU VIP 500" }
+      { no: "050", nama: "Liya" }
     ];
+
+    // FUNGSI SINKRONISASI DATA DARI SPREADSHEET SECARA OTOMATIS
+    async function sinkronkanDataDariSpreadsheet() {
+      if (isFetchingSheet) return sheetFetchPromise;
+      isFetchingSheet = true;
+
+      sheetFetchPromise = (async () => {
+        try {
+          // Endpoint GVIZ Google Sheets (Mendukung CORS & tanpa API Key)
+          const sheetUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}`;
+          const res = await fetch(sheetUrl);
+          if (!res.ok) throw new Error("Koneksi ke spreadsheet gagal: " + res.status);
+          
+          const rawText = await res.text();
+          // Ekstrak bagian JSON dari wrapper callback google
+          const jsonText = rawText.substring(rawText.indexOf('{'), rawText.lastIndexOf('}') + 1);
+          const data = JSON.parse(jsonText);
+
+          // Cari posisi kolom "Nama Lengkap"
+          let nameColIndex = 1; // Default kolom B (index 1)
+          if (data.table && data.table.cols) {
+            const foundIdx = data.table.cols.findIndex(col => col && col.label && col.label.toLowerCase().includes('nama lengkap'));
+            if (foundIdx !== -1) nameColIndex = foundIdx;
+          }
+
+          const dynamicDB = [];
+          let nomorUrut = 1;
+
+          if (data.table && data.table.rows) {
+            data.table.rows.forEach(row => {
+              if (row.c && row.c[nameColIndex]) {
+                const cellVal = row.c[nameColIndex].v;
+                if (cellVal !== null && cellVal !== undefined) {
+                  const namaBersih = String(cellVal).trim();
+                  // Saring baris kosong atau teks placeholder
+                  if (namaBersih && namaBersih.toLowerCase() !== 'nama lengkap') {
+                    dynamicDB.push({
+                      no: String(nomorUrut).padStart(3, '0'),
+                      nama: namaBersih
+                    });
+                    nomorUrut++;
+                  }
+                }
+              }
+            });
+          }
+
+          if (dynamicDB.length > 0) {
+            databaseVIP = dynamicDB;
+            console.log(`Berhasil memuat ${databaseVIP.length} data tamu VIP dari Spreadsheet.`);
+          }
+        } catch (error) {
+          console.warn("Gagal sinkron spreadsheet, menggunakan database lokal:", error);
+        } finally {
+          isFetchingSheet = false;
+        }
+      })();
+
+      return sheetFetchPromise;
+    }
+
+    // Jalankan sinkronisasi sejak halaman mulai dimuat
+    sinkronkanDataDariSpreadsheet();
 
     const authModal = document.getElementById('authModal');
     const guestInput = document.getElementById('guestInputName');
@@ -1430,6 +1042,7 @@
     const badgeBox = document.getElementById('nomorBadgeBox');
     const nomorEl = document.getElementById('slideNomorVVIP');
     const guestEl = document.getElementById('slideGuestName');
+    const btnBuka = document.getElementById('btnBukaUndangan');
 
     const urlParams = new URLSearchParams(window.location.search);
     const paramTamu = urlParams.get('to') || urlParams.get('nama');
@@ -1465,7 +1078,6 @@
       }
     }
 
-    // Verifikasi Ketat Nama Lengkap Tamu
     function bersihkanNama(str) {
       return str.toLowerCase()
                 .replace(/[^a-z0-9\s]/g, '')
@@ -1475,18 +1087,27 @@
 
     function ambilNamaInti(fullName) {
       return fullName.toLowerCase()
-                     .replace(/\b(ustadzah|ibu|hj|)\b/gi, '')
+                     .replace(/\b(ustadzah|ibu|hj|mama|teh|po|mbah|bi|kak)\b/gi, '')
                      .replace(/[^a-z0-9\s]/g, '')
                      .trim()
                      .replace(/\s+/g, ' ');
     }
 
-    function verifikasiNamaTamu() {
+    // Verifikasi Nama Tamu dengan Menunggu Data Spreadsheet
+    async function verifikasiNamaTamu() {
       const inputMentah = guestInput.value.trim();
       if (!inputMentah) {
         authErrorMsg.innerText = "Silakan masukkan nama lengkap Anda.";
         authErrorMsg.classList.remove('hidden');
         return;
+      }
+
+      // Jika data spreadsheet sedang di-fetch, tunggu sebentar
+      if (isFetchingSheet && sheetFetchPromise) {
+        const textAwal = btnBuka.innerHTML;
+        btnBuka.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-amber-300"></i> Memeriksa data...`;
+        await sheetFetchPromise;
+        btnBuka.innerHTML = textAwal;
       }
 
       const inputBersih = bersihkanNama(inputMentah);
@@ -1497,7 +1118,7 @@
         const coreTamu = ambilNamaInti(tamu.nama);
 
         if (inputBersih === fullTamu) return true;
-        if (inputInti.length >= 3 && inputInti === coreTamu) return true;
+        if (inputInti.length >= 3 && (inputInti === coreTamu || fullTamu.includes(inputInti))) return true;
 
         return false;
       });
@@ -1507,12 +1128,12 @@
         closeAuthModal();
         lanjutBukaUndangan();
       } else {
-        authErrorMsg.innerText = "Nama tidak terdaftar dalam undangan VIP. Harap masukkan nama lengkap.";
+        authErrorMsg.innerText = "Nama tidak terdaftar dalam undangan VIP. Harap masukkan nama lengkap sesuai formulir.";
         authErrorMsg.classList.remove('hidden');
       }
     }
 
-    // Kontrol Audio & Buka Amplop Undangan
+    // Kontrol Sholawat & Animasi Buka Undangan
     const audio = document.getElementById('audioPlayer');
     const musicHUD = document.getElementById('musicHUD');
     const musicIcon = document.getElementById('musicIcon');
@@ -1593,7 +1214,7 @@
       musicIcon.classList.remove('spin-active');
     }
 
-    // Logika Pembalik Lembaran Kertas Lemas 3D (Total 7 Slide Terintegrasi)
+    // Logika Pembalik Lembaran Kertas Lemas 3D (Total 7 Slide)
     let currentSlide = 1;
     const totalSlides = 7;
 
@@ -1709,7 +1330,7 @@
       if (touchEndX > touchStartX + 35) prevSlide();
     }, false);
 
-    // Engine Partikel: Kelopak Mawar & Kilau Cahaya
+    // Animasi Partikel Kelopak Mawar & Kilau Bintang
     const canvas = document.getElementById('fxCanvas');
     const ctx = canvas.getContext('2d');
 
