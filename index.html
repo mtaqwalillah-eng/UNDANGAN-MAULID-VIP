@@ -462,17 +462,17 @@
       </h3>
       
       <p class="text-[11.5px] text-amber-100/80 mb-4 leading-relaxed font-normal">
-        Silakan ketik <span class="text-amber-300 font-bold">Nama Lengkap Anda</span> sesuai dengan yang terdaftar untuk membuka undangan resmi:
+        Silakan ketik <span class="text-amber-300 font-bold">Nama Lengkap Anda</span> persis sesuai yang terdaftar di spreadsheet untuk membuka undangan resmi:
       </p>
 
       <div class="w-full space-y-3">
         <div class="relative">
-          <input type="text" id="guestInputName" placeholder="Ketik nama lengkap Anda..." class="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-amber-500/60 text-amber-100 placeholder-stone-400 text-xs focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 font-medium text-center tracking-wide" onkeydown="if(event.key==='Enter') verifikasiNamaTamu()">
+          <input type="text" id="guestInputName" placeholder="Ketik nama lengkap sesuai formulir..." class="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-amber-500/60 text-amber-100 placeholder-stone-400 text-xs focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 font-medium text-center tracking-wide" onkeydown="if(event.key==='Enter') verifikasiNamaTamu()">
         </div>
 
         <p id="authErrorMsg" class="text-[10px] text-rose-400 font-medium hidden">
           <i class="fa-solid fa-circle-exclamation mr-1"></i>
-          Nama tidak terdaftar dalam undangan VIP. Harap masukkan nama lengkap Anda.
+          Nama tidak terdaftar. Harap masukkan nama lengkap persis sesuai pendaftaran spreadsheet.
         </p>
 
         <button id="btnBukaUndangan" onclick="verifikasiNamaTamu()" class="luxury-btn w-full py-2.5 rounded-xl bg-gradient-to-r from-[#70151c] via-[#8c1822] to-[#70151c] text-amber-100 font-cinzel font-bold text-xs tracking-widest border border-amber-400/80 shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
@@ -908,7 +908,7 @@
   </main>
 
   <!-- ============================================================== -->
-  <!-- SINKRONISASI GOOGLE SHEETS & LOGIKA SISTEM                     -->
+  <!-- SINKRONISASI GOOGLE SHEETS & LOGIKA SISTEM (EXACT MATCH)       -->
   <!-- ============================================================== -->
   <script>
     localStorage.removeItem('maulid_vip_guest');
@@ -921,7 +921,7 @@
 
     // Database cadangan bawaan (fallback lokal jika koneksi tamu lambat)
     let databaseVIP = [
-      { no: "001", nama: "Siti Rohayati (neneng)" },
+      { no: "001", nama: "Siti Rohayati (Neneng)" },
       { no: "002", nama: "Suryani ( nani )" },
       { no: "003", nama: "BUNDA INDAH" },
       { no: "004", nama: "Shinta Indriyani" },
@@ -937,7 +937,7 @@
       { no: "014", nama: "Dwi Lisetiyowati" },
       { no: "015", nama: "Ria Novelita" },
       { no: "016", nama: "Hj. Siti Maryam" },
-      { no: "017", nama: "Ukaesih" },
+      { no: "017", nama: "Ukaesih( ulah)" },
       { no: "018", nama: "Sumiyati" },
       { no: "019", nama: "Uliyah" },
       { no: "020", nama: "ARI SANTY ERKAM" },
@@ -980,18 +980,16 @@
 
       sheetFetchPromise = (async () => {
         try {
-          // Endpoint GVIZ Google Sheets (Mendukung CORS & tanpa API Key)
           const sheetUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}`;
           const res = await fetch(sheetUrl);
           if (!res.ok) throw new Error("Koneksi ke spreadsheet gagal: " + res.status);
           
           const rawText = await res.text();
-          // Ekstrak bagian JSON dari wrapper callback google
           const jsonText = rawText.substring(rawText.indexOf('{'), rawText.lastIndexOf('}') + 1);
           const data = JSON.parse(jsonText);
 
-          // Cari posisi kolom "Nama Lengkap"
-          let nameColIndex = 1; // Default kolom B (index 1)
+          // Cari posisi kolom "Nama Lengkap" (biasanya kolom index 1)
+          let nameColIndex = 1;
           if (data.table && data.table.cols) {
             const foundIdx = data.table.cols.findIndex(col => col && col.label && col.label.toLowerCase().includes('nama lengkap'));
             if (foundIdx !== -1) nameColIndex = foundIdx;
@@ -1006,7 +1004,7 @@
                 const cellVal = row.c[nameColIndex].v;
                 if (cellVal !== null && cellVal !== undefined) {
                   const namaBersih = String(cellVal).trim();
-                  // Saring baris kosong atau teks placeholder
+                  // Saring baris header atau teks kosong
                   if (namaBersih && namaBersih.toLowerCase() !== 'nama lengkap') {
                     dynamicDB.push({
                       no: String(nomorUrut).padStart(3, '0'),
@@ -1033,7 +1031,6 @@
       return sheetFetchPromise;
     }
 
-    // Jalankan sinkronisasi sejak halaman mulai dimuat
     sinkronkanDataDariSpreadsheet();
 
     const authModal = document.getElementById('authModal');
@@ -1078,22 +1075,13 @@
       }
     }
 
-    function bersihkanNama(str) {
-      return str.toLowerCase()
-                .replace(/[^a-z0-9\s]/g, '')
-                .trim()
-                .replace(/\s+/g, ' ');
+    // NORMALISASI KETAT: Hanya ubah ke huruf kecil dan hapus spasi berlebih
+    // Karakter kurung, tanda baca, dll TETAP DIJAGA agar wajib sama persis dengan spreadsheet!
+    function normalisasiKetat(str) {
+      return str.toLowerCase().trim().replace(/\s+/g, ' ');
     }
 
-    function ambilNamaInti(fullName) {
-      return fullName.toLowerCase()
-                     .replace(/\b(ustadzah|ibu|hj|mama|teh|po|mbah|bi|kak)\b/gi, '')
-                     .replace(/[^a-z0-9\s]/g, '')
-                     .trim()
-                     .replace(/\s+/g, ' ');
-    }
-
-    // Verifikasi Nama Tamu dengan Menunggu Data Spreadsheet
+    // VERIFIKASI NAMA TAMU (WAJIB PERSIS SAMA DENGAN SPREADSHEET)
     async function verifikasiNamaTamu() {
       const inputMentah = guestInput.value.trim();
       if (!inputMentah) {
@@ -1102,7 +1090,7 @@
         return;
       }
 
-      // Jika data spreadsheet sedang di-fetch, tunggu sebentar
+      // Tunggu jika spreadsheet masih dalam proses sinkronisasi awal
       if (isFetchingSheet && sheetFetchPromise) {
         const textAwal = btnBuka.innerHTML;
         btnBuka.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-amber-300"></i> Memeriksa data...`;
@@ -1110,17 +1098,11 @@
         btnBuka.innerHTML = textAwal;
       }
 
-      const inputBersih = bersihkanNama(inputMentah);
-      const inputInti = ambilNamaInti(inputMentah);
+      const inputKetat = normalisasiKetat(inputMentah);
 
+      // Pencarian SAMA PERSIS (Exact Match)
       const found = databaseVIP.find(tamu => {
-        const fullTamu = bersihkanNama(tamu.nama);
-        const coreTamu = ambilNamaInti(tamu.nama);
-
-        if (inputBersih === fullTamu) return true;
-        if (inputInti.length >= 3 && (inputInti === coreTamu || fullTamu.includes(inputInti))) return true;
-
-        return false;
+        return normalisasiKetat(tamu.nama) === inputKetat;
       });
 
       if (found) {
@@ -1128,7 +1110,7 @@
         closeAuthModal();
         lanjutBukaUndangan();
       } else {
-        authErrorMsg.innerText = "Nama tidak terdaftar dalam undangan VIP. Harap masukkan nama lengkap sesuai formulir.";
+        authErrorMsg.innerText = "Nama tidak terdaftar. Harap masukkan nama lengkap persis sesuai yang terdaftar di spreadsheet (bukan nama panggilan).";
         authErrorMsg.classList.remove('hidden');
       }
     }
