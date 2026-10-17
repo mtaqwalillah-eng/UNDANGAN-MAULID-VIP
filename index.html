@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Undangan VIP - Maulid Akbar Satu Cinta Annisa Haula Rosul</title>
 
-  <!-- Koneksi Awal ke Server Cloud Render & Font -->
+  <!-- Koneksi Awal ke Server Cloud & Font -->
   <link rel="preconnect" href="https://wsrv.nl" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,23 +14,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- SCRIPT CLOUD RENDER OTOMATIS (Mengubah PNG 3MB menjadi Cloud WebP ~70KB secara Real-Time) -->
-  <script>
-    (function() {
-      const isOnlineHost = window.location.protocol.startsWith('http') && 
-                           !window.location.hostname.includes('localhost') && 
-                           !window.location.hostname.includes('127.0.0.1');
-      const basePath = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
-
-      window.getCloudImageUrl = function(rawFilename, width = 800, quality = 82) {
-        const cleanName = rawFilename.split('?')[0];
-        if (!isOnlineHost) return rawFilename;
-        const fullSourceUrl = basePath + encodeURI(cleanName);
-        return `https://wsrv.nl/?url=${encodeURIComponent(fullSourceUrl)}&w=${width}&output=webp&q=${quality}&il`;
-      };
-    })();
-  </script>
 
   <style>
     body {
@@ -49,7 +32,6 @@
       max-height: 96vh;
       max-height: 96dvh;
       box-shadow: 0 0 60px rgba(0, 0, 0, 0.95), 0 0 25px rgba(212, 175, 55, 0.25);
-      transform: translateZ(0);
     }
 
     /* Animasi Putaran Piringan Musik */
@@ -76,7 +58,7 @@
 
     /* Elemen Kartu Kaca Slide 7 */
     .futuristic-card {
-      background: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.93);
       border: 1px solid rgba(212, 175, 55, 0.45);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
       transition: transform 0.2s ease, border-color 0.2s ease;
@@ -219,33 +201,28 @@
     }
 
     /* ========================================================================= */
-    /* ZERO-LAG 3D ENGINE DENGAN DATA-STATE (MENGHINDARI MUTATION TAILWIND CDN)  */
-    /* Seluruh halaman selalu ter-mount di GPU (Tanpa display:none render lag)   */
+    /* ENGINE SLIDE ANTI-TERPOTONG (TANPA OVERFLOW TILE LIMIT CHROME ANDROID)    */
     /* ========================================================================= */
     .slide-viewport {
       position: relative;
       width: 100%;
       height: 100%;
       overflow: hidden;
-      perspective: 1600px;
-      perspective-origin: 0% 50%;
       background-color: #fdfbf7;
     }
 
+    /* Penting: Jangan pasang will-change atau perspective permanen di sini 
+       agar Chrome Android tidak kehabisan memori Tile (penyebab gambar terpotong) */
     .page-slide {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       background-color: #fdfbf7;
-      transform-origin: 0% 50%;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
+      transform-origin: left center;
       pointer-events: none;
-      opacity: 0;
+      display: none;
       z-index: 1;
-      transform: translate3d(0, 0, 0) rotateY(0deg);
-      will-change: transform, opacity;
     }
 
     .page-slide::before {
@@ -276,65 +253,69 @@
     }
 
     .page-slide[data-state="active"] {
+      display: block;
       opacity: 1;
       pointer-events: auto;
       z-index: 20;
-      transform: translate3d(0, 0, 0) rotateY(0deg);
     }
 
     .page-slide[data-state="underneath"] {
+      display: block;
       opacity: 1;
       pointer-events: none;
       z-index: 10;
-      transform: translate3d(0, 0, 0) rotateY(0deg);
     }
 
     .page-slide[data-state="curl-forward"] {
+      display: block;
       z-index: 30;
       pointer-events: none;
-      animation: pageCurlForwardAnim 0.48s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+      will-change: transform, opacity;
+      animation: pageCurlForwardAnim 0.46s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
     }
 
     .page-slide[data-state="curl-forward"] .paper-curl-shade {
-      animation: paperShadeAnim 0.48s linear forwards;
+      animation: paperShadeAnim 0.46s linear forwards;
     }
 
     @keyframes pageCurlForwardAnim {
       0% {
-        transform: translate3d(0, 0, 0) rotateY(0deg);
+        transform: perspective(1600px) rotateY(0deg);
         opacity: 1;
       }
       55% {
-        transform: translate3d(0, 0, 0) rotateY(-55deg) scaleY(0.985);
+        transform: perspective(1600px) rotateY(-50deg) scaleY(0.985);
         opacity: 0.98;
       }
       100% {
-        transform: translate3d(0, 0, 0) rotateY(-105deg) scaleY(0.97);
+        transform: perspective(1600px) rotateY(-95deg) scaleY(0.97);
         opacity: 0;
       }
     }
 
     .page-slide[data-state="curl-backward"] {
+      display: block;
       z-index: 30;
       pointer-events: none;
-      animation: pageCurlBackwardAnim 0.48s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+      will-change: transform, opacity;
+      animation: pageCurlBackwardAnim 0.46s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
     }
 
     .page-slide[data-state="curl-backward"] .paper-curl-shade {
-      animation: paperShadeAnim 0.48s linear forwards;
+      animation: paperShadeAnim 0.46s linear forwards;
     }
 
     @keyframes pageCurlBackwardAnim {
       0% {
-        transform: translate3d(0, 0, 0) rotateY(-105deg) scaleY(0.97);
+        transform: perspective(1600px) rotateY(-95deg) scaleY(0.97);
         opacity: 0;
       }
       45% {
-        transform: translate3d(0, 0, 0) rotateY(-50deg) scaleY(0.985);
+        transform: perspective(1600px) rotateY(-45deg) scaleY(0.985);
         opacity: 0.98;
       }
       100% {
-        transform: translate3d(0, 0, 0) rotateY(0deg);
+        transform: perspective(1600px) rotateY(0deg);
         opacity: 1;
       }
     }
@@ -380,18 +361,26 @@
 
     /* Modal Verifikasi Tamu VIP */
     #authModal {
-      background-color: rgba(3, 10, 7, 0.92);
+      background-color: rgba(3, 10, 7, 0.93);
       transition: opacity 0.25s ease;
     }
     #authCard {
       box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 35px rgba(212, 175, 55, 0.4);
     }
+
+    /* Kanvas Bitmap Permanen di Tiap Slide */
+    .slide-bitmap-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-0 sm:p-3 overflow-hidden select-none">
 
-  <!-- Audio Pemutar Sholawat -->
-  <audio id="audioPlayer" loop preload="auto" playsinline>
+  <!-- Audio Pemutar Sholawat (Preload="none" di awal agar 100% sinyal fokus menyelesaikan gambar dulu) -->
+  <audio id="audioPlayer" loop preload="none" playsinline>
     <source src="MAHALLUL%20QIYAM%20UHA.MP3" type="audio/mpeg">
     <source src="MAHALLUL QIYAM UHA.MP3" type="audio/mpeg">
     <source src="mahallul qiyam uha.mp3" type="audio/mpeg">
@@ -485,13 +474,11 @@
         
         <!-- Background Foto Masjid Utama -->
         <img 
-          data-cloud-src="fbebf820c10f22e1b222d929f1682333.jpg" 
-          data-cloud-w="600"
-          fetchpriority="high"
-          decoding="async"
-          onerror="if(!this.dataset.fallback){this.dataset.fallback='1'; this.src='fbebf820c10f22e1b222d929f1682333.jpg?v=fresh';} else if(this.dataset.fallback==='1'){this.dataset.fallback='2'; this.src='https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=800&auto=format&fit=crop';}" 
+          data-bg-asset="masjid"
+          src="fbebf820c10f22e1b222d929f1682333.jpg?v=fresh" 
+          onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='masjid.jpg';} else if(this.dataset.retry==='1'){this.dataset.retry='2'; this.src='https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=800&auto=format&fit=crop';}" 
           alt="" 
-          class="cloud-img absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none">
+          class="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none">
         
         <div class="absolute inset-0 bg-gradient-to-b from-[#061811]/90 via-[#082218]/45 to-[#030c08]/90 pointer-events-none z-10"></div>
 
@@ -500,40 +487,32 @@
         <div class="absolute bottom-2 left-2 z-40 text-amber-400/70 text-xs pointer-events-none">❖</div>
         <div class="absolute bottom-2 right-2 z-40 text-amber-400/70 text-xs pointer-events-none">❖</div>
 
-        <!-- Kartu di dalam amplop -->
-        <div class="env-inner-card border border-amber-400/30">
-          <img 
-            data-cloud-src="UNDANGAN MAULID VVIP.png" 
-            data-cloud-w="800"
-            fetchpriority="high" 
-            decoding="async" 
-            onerror="if(!this.dataset.fallback){this.dataset.fallback='1'; this.src='UNDANGAN MAULID VVIP.png?v=fresh';}"
-            alt="Kartu Maulid Akbar" 
-            class="cloud-img w-full h-full object-cover">
+        <!-- Kartu di dalam amplop (Menggunakan Canvas Pre-Rendered) -->
+        <div class="env-inner-card border border-amber-400/30 bg-[#fdfbf7]">
+          <canvas id="canvas-cover-card" width="576" height="1024" class="slide-bitmap-canvas"></canvas>
+          <img id="fallback-cover-card" src="UNDANGAN MAULID VVIP.png?v=fresh" alt="Kartu Maulid Akbar" class="w-full h-full object-cover hidden">
           <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30 pointer-events-none"></div>
         </div>
 
         <!-- Lipatan Atas Amplop -->
         <div class="env-top-flap flex items-center justify-center overflow-hidden relative bg-[#061811]">
           <img 
-            data-cloud-src="fbebf820c10f22e1b222d929f1682333.jpg" 
-            data-cloud-w="600"
-            decoding="async"
-            onerror="if(!this.dataset.fallback){this.dataset.fallback='1'; this.src='fbebf820c10f22e1b222d929f1682333.jpg?v=fresh';}" 
+            data-bg-asset="masjid"
+            src="fbebf820c10f22e1b222d929f1682333.jpg?v=fresh" 
+            onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='masjid.jpg';}" 
             alt="" 
-            class="cloud-img absolute inset-0 w-full h-full object-cover object-top opacity-25 pointer-events-none">
+            class="absolute inset-0 w-full h-full object-cover object-top opacity-25 pointer-events-none">
           <div class="absolute inset-0 bg-gradient-to-b from-[#030c08]/95 via-[#071f15]/85 to-[#0b2b20]/65 pointer-events-none"></div>
         </div>
 
         <!-- Kantong Bawah Amplop -->
         <div class="env-bottom-pocket overflow-hidden relative bg-[#051610]">
           <img 
-            data-cloud-src="fbebf820c10f22e1b222d929f1682333.jpg" 
-            data-cloud-w="600"
-            decoding="async"
-            onerror="if(!this.dataset.fallback){this.dataset.fallback='1'; this.src='fbebf820c10f22e1b222d929f1682333.jpg?v=fresh';}" 
+            data-bg-asset="masjid"
+            src="fbebf820c10f22e1b222d929f1682333.jpg?v=fresh" 
+            onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='masjid.jpg';}" 
             alt="" 
-            class="cloud-img absolute inset-0 w-full h-full object-cover object-bottom opacity-40">
+            class="absolute inset-0 w-full h-full object-cover object-bottom opacity-40">
           <div class="absolute inset-0 bg-gradient-to-t from-[#020a06] via-[#051c14]/85 to-[#0a2c1f]/50 pointer-events-none z-20"></div>
           <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/90 to-transparent pointer-events-none z-20"></div>
         </div>
@@ -544,13 +523,10 @@
           <!-- LOGO PENGAIT SEPAKET DENGAN LOGO ASLI -->
           <div class="royal-wax-seal mb-3 pointer-events-auto transform hover:scale-105 transition-transform cursor-pointer" onclick="handleTombolBuka()" title="Buka Undangan">
             <img 
-              data-cloud-src="Cuplikan layar 2026-09-18 200553.png" 
-              data-cloud-w="200"
-              fetchpriority="high"
-              decoding="async"
-              onerror="if(!this.dataset.fallback){this.dataset.fallback='1'; this.src='Cuplikan layar 2026-09-18 200553.png';} else if(this.dataset.fallback==='1'){this.dataset.fallback='2'; this.src='logo.png';}" 
+              src="Cuplikan layar 2026-09-18 200553.png" 
+              onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='Cuplikan layar 2026-09-18 200553.jpg';} else if(this.dataset.retry==='1'){this.dataset.retry='2'; this.src='logo.png';}" 
               alt="Logo MTQL" 
-              class="cloud-img w-full h-full object-cover rounded-full">
+              class="w-full h-full object-cover rounded-full">
           </div>
 
           <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/80 border border-amber-500/60 shadow-xl mb-4 pointer-events-auto">
@@ -559,7 +535,7 @@
             </span>
           </div>
 
-          <button onclick="handleTombolBuka()" class="luxury-btn pointer-events-auto w-full max-w-[280px] py-4 px-6 rounded-2xl bg-gradient-to-r from-[#6e1319] via-[#8c1822] to-[#6e1319] text-amber-100 font-cinzel font-bold text-xs tracking-[0.22em] border-2 border-amber-400/80 shadow-2xl flex items-center justify-center gap-3 transition active:scale-95 group">
+          <button id="btnCoverUtama" onclick="handleTombolBuka()" class="luxury-btn pointer-events-auto w-full max-w-[280px] py-4 px-6 rounded-2xl bg-gradient-to-r from-[#6e1319] via-[#8c1822] to-[#6e1319] text-amber-100 font-cinzel font-bold text-xs tracking-[0.22em] border-2 border-amber-400/80 shadow-2xl flex items-center justify-center gap-3 transition active:scale-95 group">
             <i class="fa-solid fa-envelope-open-text text-amber-300 text-base group-hover:scale-110 transition-transform"></i>
             <span>BUKA UNDANGAN</span>
           </button>
@@ -575,44 +551,29 @@
 
     </div>
 
-    <!-- ============================================================== -->
-    <!-- SLIDE VIEWPORT (7 HALAMAN CLOUD-RENDERED & GPU LOCKED)         -->
-    <!-- ============================================================== -->
+    <!-- ========================================================================= -->
+    <!-- SLIDE VIEWPORT (MENGGUNAKAN BITMAP CANVAS LOCK - ANTI SEPARUH PUTIH)      -->
+    <!-- ========================================================================= -->
     <div class="slide-viewport">
       
       <!-- Slide 1: PREVIEW AMPLOP TAMPILAN PENUH -->
       <div id="slide-1" class="page-slide" data-state="active">
-        <img 
-          data-cloud-src="UNDANGAN MAULID VVIP.png" 
-          data-cloud-w="800"
-          decoding="async"
-          onerror="if(!this.dataset.fallback){this.dataset.fallback='1'; this.src='UNDANGAN MAULID VVIP.png?v=fresh';}" 
-          alt="Undangan Maulid Preview Penuh" 
-          class="cloud-img w-full h-full object-fill">
+        <canvas id="canvas-slide-1" width="576" height="1024" class="slide-bitmap-canvas"></canvas>
+        <img id="fallback-slide-1" class="w-full h-full object-fill hidden" alt="Undangan Maulid Preview Penuh">
         <div class="paper-curl-shade"></div>
       </div>
 
       <!-- Slide 2: MUQODDIMAH.png -->
       <div id="slide-2" class="page-slide" data-state="idle">
-        <img 
-          data-cloud-src="MUQODDIMAH.png" 
-          data-cloud-w="800"
-          decoding="async" 
-          onerror="if(!this.dataset.fallback){this.dataset.fallback='1'; this.src='MUQODDIMAH.png?v=fresh';}"
-          alt="Muqoddimah" 
-          class="cloud-img w-full h-full object-fill">
+        <canvas id="canvas-slide-2" width="576" height="1024" class="slide-bitmap-canvas"></canvas>
+        <img id="fallback-slide-2" class="w-full h-full object-fill hidden" alt="Muqoddimah">
         <div class="paper-curl-shade"></div>
       </div>
 
       <!-- Slide 3: HALAMAN UNDANGAN DENGAN NAMA TAMU & NOMOR VIP -->
       <div id="slide-3" class="page-slide" data-state="idle">
-        <img 
-          data-cloud-src="UNDANGAN.png" 
-          data-cloud-w="800"
-          decoding="async" 
-          onerror="if(!this.dataset.fallback){this.dataset.fallback='1'; this.src='UNDANGAN.png?v=fresh';} else if(this.dataset.fallback==='1'){this.dataset.fallback='2'; this.src='UNDANGAN MAULID VVIP.png?v=fresh';}" 
-          alt="Undangan VIP" 
-          class="cloud-img w-full h-full object-fill">
+        <canvas id="canvas-slide-3" width="576" height="1024" class="slide-bitmap-canvas"></canvas>
+        <img id="fallback-slide-3" class="w-full h-full object-fill hidden" alt="Undangan VIP">
         
         <!-- Lencana Nomor Urut VIP -->
         <div id="nomorBadgeBox" class="absolute z-20 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300" style="top: 70.2%; left: 23.0%; width: 73.0%; height: 3.2%;">
@@ -632,13 +593,8 @@
 
       <!-- Slide 4: ACARA.png -->
       <div id="slide-4" class="page-slide" data-state="idle">
-        <img 
-          data-cloud-src="ACARA.png" 
-          data-cloud-w="800"
-          decoding="async" 
-          onerror="if(!this.dataset.fallback){this.dataset.fallback='1'; this.src='ACARA.png?v=fresh';}"
-          alt="Acara" 
-          class="cloud-img w-full h-full object-fill">
+        <canvas id="canvas-slide-4" width="576" height="1024" class="slide-bitmap-canvas"></canvas>
+        <img id="fallback-slide-4" class="w-full h-full object-fill hidden" alt="Acara">
 
         <!-- Area Sentuh Peta Lokasi At-Tin -->
         <a href="https://maps.app.goo.gl/f7aA17GN3GxNhQ2c6" target="_blank" rel="noopener noreferrer" class="absolute z-30 cursor-pointer rounded-full" style="top: 68.5%; left: 45%; width: 20%; height: 7.5%;" title="Buka Lokasi Masjid Agung At-Tin di Google Maps"></a>
@@ -658,13 +614,8 @@
 
       <!-- Slide 5: KETENTUAN.png -->
       <div id="slide-5" class="page-slide" data-state="idle">
-        <img 
-          data-cloud-src="KETENTUAN.png" 
-          data-cloud-w="800"
-          decoding="async" 
-          onerror="if(!this.dataset.fallback){this.dataset.fallback='1'; this.src='KETENTUAN.png?v=fresh';}"
-          alt="Ketentuan Tamu VIP" 
-          class="cloud-img w-full h-full object-fill">
+        <canvas id="canvas-slide-5" width="576" height="1024" class="slide-bitmap-canvas"></canvas>
+        <img id="fallback-slide-5" class="w-full h-full object-fill hidden" alt="Ketentuan Tamu VIP">
 
         <!-- Tautan Lokasi MTQL & MTNH -->
         <a href="https://maps.app.goo.gl/ghPvMXjdz2fY6jxw5" target="_blank" rel="noopener noreferrer" class="absolute z-30 cursor-pointer block" style="top: 24.5%; left: 14%; width: 58%; height: 4%;" title="Buka Lokasi MTQL di Google Maps"></a>
@@ -674,13 +625,8 @@
 
       <!-- Slide 6: IKHTITAM.png -->
       <div id="slide-6" class="page-slide" data-state="idle">
-        <img 
-          data-cloud-src="IKHTITAM.png" 
-          data-cloud-w="800"
-          decoding="async" 
-          onerror="if(!this.dataset.fallback){this.dataset.fallback='1'; this.src='IKHTITAM.png?v=fresh';}"
-          alt="Ikhtitam" 
-          class="cloud-img w-full h-full object-fill">
+        <canvas id="canvas-slide-6" width="576" height="1024" class="slide-bitmap-canvas"></canvas>
+        <img id="fallback-slide-6" class="w-full h-full object-fill hidden" alt="Ikhtitam">
         <div class="paper-curl-shade"></div>
       </div>
 
@@ -709,12 +655,11 @@
           
           <div class="absolute inset-0 pointer-events-none overflow-hidden">
             <img 
-              data-cloud-src="fbebf820c10f22e1b222d929f1682333.jpg" 
-              data-cloud-w="600"
-              decoding="async"
-              onerror="if(!this.dataset.fallback){this.dataset.fallback='1'; this.src='fbebf820c10f22e1b222d929f1682333.jpg?v=fresh';}" 
+              data-bg-asset="masjid"
+              src="fbebf820c10f22e1b222d929f1682333.jpg?v=fresh" 
+              onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='masjid.jpg';}" 
               alt="" 
-              class="cloud-img absolute inset-0 w-full h-full object-cover opacity-80" 
+              class="absolute inset-0 w-full h-full object-cover opacity-80" 
               style="object-position: center center;">
             
             <div class="absolute inset-0 bg-gradient-to-b from-[#fffdfa]/60 via-transparent to-[#f7f0e4]/50"></div>
@@ -811,12 +756,10 @@
             <div class="my-auto flex flex-col items-center justify-center pointer-events-none py-0.5">
               <div class="prophet-emblem flex flex-col items-center justify-center">
                 <img 
-                  data-cloud-src="dabde5306bc60fcce558686108a084e1.jpg" 
-                  data-cloud-w="400"
-                  decoding="async"
-                  onerror="if(!this.dataset.fallback){this.dataset.fallback='1'; this.src='dabde5306bc60fcce558686108a084e1.jpg?v=fresh';} else if(this.dataset.fallback==='1'){this.dataset.fallback='2'; this.src='https://upload.wikimedia.org/wikipedia/commons/3/3d/Muhammad2.png';}" 
+                  src="dabde5306bc60fcce558686108a084e1.jpg?v=fresh" 
+                  onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='muhammad.jpg';} else if(this.dataset.retry==='1'){this.dataset.retry='2'; this.src='https://upload.wikimedia.org/wikipedia/commons/3/3d/Muhammad2.png';}" 
                   alt="Kaligrafi Muhammad Rasulullah" 
-                  class="cloud-img w-40 h-auto sm:w-44 sm:h-auto object-contain">
+                  class="w-40 h-auto sm:w-44 sm:h-auto object-contain">
               </div>
             </div>
 
@@ -932,30 +875,11 @@
 
   </main>
 
-  <!-- ============================================================== -->
-  <!-- ENGINE CLOUD RENDER, PRE-DECODE GPU & LOGIKA SISTEM            -->
-  <!-- ============================================================== -->
+  <!-- ========================================================================= -->
+  <!-- ENGINE PRE-RENDER BITMAP KANVAS, ANTI-POTONG GAMBAR & LOGIKA SISTEM       -->
+  <!-- ========================================================================= -->
   <script>
     localStorage.removeItem('maulid_vip_guest');
-
-    // 1. AKTIFKAN CLOUD RENDERING PADA SELURUH GAMBAR SECARA SERENTAK & RINGAN
-    // Karena tiap gambar kini hanya ~70KB (WebP Cloud), seluruh 7 slide langsung siap di GPU!
-    function initCloudRenderedImages() {
-      const cloudImages = document.querySelectorAll('img.cloud-img');
-      cloudImages.forEach(img => {
-        const rawSrc = img.getAttribute('data-cloud-src');
-        const targetW = parseInt(img.getAttribute('data-cloud-w') || '800', 10);
-        if (rawSrc) {
-          img.src = window.getCloudImageUrl(rawSrc, targetW, 82);
-          img.addEventListener('load', () => {
-            if (typeof img.decode === 'function') {
-              img.decode().catch(() => {});
-            }
-          }, { once: true });
-        }
-      });
-    }
-    initCloudRenderedImages();
 
     const audio = document.getElementById('audioPlayer');
     const musicHUD = document.getElementById('musicHUD');
@@ -966,7 +890,124 @@
     let isCoverOpen = false;
     let isModalOpen = false;
 
+    // =========================================================================
+    // 1. MESIN PENGUNCI BITMAP KANVAS (MENCEGAH GAMBAR TERPOTONG ATAS-BAWAH)
+    // Mengunduh versi Cloud WebP ringan (tanpa progressive/interlaced &il),
+    // lalu menggambar utuh ke <canvas> sehingga piksel terkunci 100% di memori!
+    // =========================================================================
+    const isOnlineHost = window.location.protocol.startsWith('http') && 
+                         !window.location.hostname.includes('localhost') && 
+                         !window.location.hostname.includes('127.0.0.1');
+    const basePath = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
+
+    function buildCloudUrl(filename, w = 680, q = 80) {
+      if (!isOnlineHost) return filename + '?v=fresh';
+      const fullUrl = basePath + encodeURI(filename);
+      // TANPA parameter &il (interlaced) agar tidak pernah merender separuh dari atas ke bawah!
+      return `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}&w=${w}&output=webp&q=${q}`;
+    }
+
+    const slideConfigs = [
+      { id: 1, file: 'UNDANGAN MAULID VVIP.png', fallback: 'UNDANGAN.png' },
+      { id: 2, file: 'MUQODDIMAH.png', fallback: 'MUQODDIMAH.png' },
+      { id: 3, file: 'UNDANGAN.png', fallback: 'UNDANGAN MAULID VVIP.png' },
+      { id: 4, file: 'ACARA.png', fallback: 'ACARA.png' },
+      { id: 5, file: 'KETENTUAN.png', fallback: 'KETENTUAN.png' },
+      { id: 6, file: 'IKHTITAM.png', fallback: 'IKHTITAM.png' }
+    ];
+
+    let slidesReadyCount = 0;
+    const totalBitmapSlides = slideConfigs.length;
+
+    function drawImageToCanvas(imgObj, canvasId, fallbackImgId) {
+      const canvas = document.getElementById(canvasId);
+      const fallbackImg = document.getElementById(fallbackImgId);
+      if (!canvas) return;
+      try {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(imgObj, 0, 0, canvas.width, canvas.height);
+      } catch (e) {
+        // Jika dibuka via file:// lokal di PC (CORS), tampilkan <img> yang sudah ter-decode penuh
+        if (fallbackImg) {
+          fallbackImg.src = imgObj.src;
+          fallbackImg.classList.remove('hidden');
+          canvas.classList.add('hidden');
+        }
+      }
+    }
+
+    function loadAndLockSlide(cfg) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        if (isOnlineHost) img.crossOrigin = 'anonymous';
+
+        let triedDirectFallback = false;
+
+        const onComplete = async () => {
+          if (typeof img.decode === 'function') {
+            try { await img.decode(); } catch (e) {}
+          }
+          // Gambar ke kanvas slide
+          drawImageToCanvas(img, `canvas-slide-${cfg.id}`, `fallback-slide-${cfg.id}`);
+          // Jika Slide 1, gambar juga ke kartu dalam amplop depan
+          if (cfg.id === 1) {
+            drawImageToCanvas(img, 'canvas-cover-card', 'fallback-cover-card');
+          }
+          slidesReadyCount++;
+          resolve();
+        };
+
+        img.onload = onComplete;
+
+        img.onerror = () => {
+          if (!triedDirectFallback) {
+            triedDirectFallback = true;
+            img.removeAttribute('crossOrigin');
+            img.src = cfg.file + '?v=fresh';
+          } else {
+            slidesReadyCount++;
+            resolve();
+          }
+        };
+
+        img.src = buildCloudUrl(cfg.file, 680, 82);
+      });
+    }
+
+    // Muat ke-6 gambar slide terlebih dahulu, baru muat lagu MP3 setelah gambar siap
+    // agar tidak terjadi perebutan sinyal (613 K/S) antara MP3 dan gambar slide!
+    const allSlidesReadyPromise = (async () => {
+      // Optimalkan juga foto latar masjid lewat Cloud jika online
+      if (isOnlineHost) {
+        const masjidCloud = buildCloudUrl('fbebf820c10f22e1b222d929f1682333.jpg', 540, 75);
+        document.querySelectorAll('img[data-bg-asset="masjid"]').forEach(el => {
+          el.src = masjidCloud;
+        });
+      }
+
+      // Prioritas 1: Kunci Slide 1, 2, dan 3 terlebih dahulu
+      await Promise.all([
+        loadAndLockSlide(slideConfigs[0]),
+        loadAndLockSlide(slideConfigs[1]),
+        loadAndLockSlide(slideConfigs[2])
+      ]);
+
+      // Mulai cicil buffer lagu MP3 setelah 3 slide pertama aman di memori
+      audio.preload = 'auto';
+      audio.load();
+
+      // Prioritas 2: Kunci Slide 4, 5, dan 6
+      await Promise.all([
+        loadAndLockSlide(slideConfigs[3]),
+        loadAndLockSlide(slideConfigs[4]),
+        loadAndLockSlide(slideConfigs[5])
+      ]);
+    })();
+
+    // =========================================================================
     // 2. SINKRONISASI DATA DARI SPREADSHEET SECARA OTOMATIS
+    // =========================================================================
     const SPREADSHEET_ID = '1-jgBw-gWk-451E_1mCoeqYjV6-2d-N_90efBnDUwSK4';
     const SHEET_GID = '1722296103'; // Tab "Form Responses 2"
     let isFetchingSheet = false;
@@ -1088,6 +1129,7 @@
     const nomorEl = document.getElementById('slideNomorVVIP');
     const guestEl = document.getElementById('slideGuestName');
     const btnBuka = document.getElementById('btnBukaUndangan');
+    const btnCoverUtama = document.getElementById('btnCoverUtama');
 
     const urlParams = new URLSearchParams(window.location.search);
     const paramTamu = urlParams.get('to') || urlParams.get('nama');
@@ -1117,8 +1159,15 @@
       authModal.classList.add('opacity-0', 'pointer-events-none');
     }
 
-    function handleTombolBuka() {
+    async function handleTombolBuka() {
       if (guestEl.innerText.trim() !== '') {
+        // Jika menggunakan link langsung (?to=Nama), pastikan seluruh kanvas halaman 100% siap sebelum membuka amplop
+        if (slidesReadyCount < totalBitmapSlides) {
+          const originalHTML = btnCoverUtama.innerHTML;
+          btnCoverUtama.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-amber-300"></i> <span>MENYIAPKAN HALAMAN...</span>`;
+          await allSlidesReadyPromise;
+          btnCoverUtama.innerHTML = originalHTML;
+        }
         lanjutBukaUndangan();
       } else {
         showAuthModal();
@@ -1137,21 +1186,28 @@
         return;
       }
 
+      const textAwal = btnBuka.innerHTML;
+
       if (isFetchingSheet && sheetFetchPromise) {
-        const textAwal = btnBuka.innerHTML;
         btnBuka.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-amber-300"></i> Memeriksa data...`;
         await sheetFetchPromise;
-        btnBuka.innerHTML = textAwal;
       }
 
       const inputKetat = normalisasiKetat(inputMentah);
       const found = databaseVIP.find(tamu => normalisasiKetat(tamu.nama) === inputKetat);
 
       if (found) {
+        // Kunci pengaman: Pastikan 100% halaman sudah digambar ke <canvas> sebelum amplop dibuka!
+        if (slidesReadyCount < totalBitmapSlides) {
+          btnBuka.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-amber-300"></i> Menyiapkan Halaman...`;
+          await allSlidesReadyPromise;
+        }
+        btnBuka.innerHTML = textAwal;
         applyGuestData(found.no, found.nama);
         closeAuthModal();
         lanjutBukaUndangan();
       } else {
+        btnBuka.innerHTML = textAwal;
         authErrorMsg.innerText = "Nama tidak terdaftar. Harap masukkan nama lengkap persis sesuai yang terdaftar di spreadsheet (bukan nama panggilan).";
         authErrorMsg.classList.remove('hidden');
       }
@@ -1228,7 +1284,7 @@
       musicIcon.classList.remove('spin-active');
     }
 
-    // 3. NAVIGASI SLIDE DENGAN DATA-STATE (BEBAS DARI GANGGUAN TAILWIND CDN)
+    // 3. NAVIGASI SLIDE (HANYA MERENDER 1 SLIDE AKTIF & 1 SLIDE TRANSISI)
     let currentSlide = 1;
     const totalSlides = 7;
 
@@ -1266,7 +1322,7 @@
         currentSlide = toSlide;
         isPageTurning = false;
         startFXLoop();
-      }, 490);
+      }, 470);
     }
 
     function nextSlide() {
