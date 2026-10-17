@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Undangan VIP - Maulid Akbar Satu Cinta Annisa Haula Rosul</title>
+
+  <!-- Preload Aset Prioritas Utama Agar Sampul Terbuka Instan di HP -->
+  <link rel="preload" as="image" href="fbebf820c10f22e1b222d929f1682333.jpg?v=fresh" fetchpriority="high">
+  <link rel="preload" as="image" href="UNDANGAN MAULID VVIP.png?v=fresh" fetchpriority="high">
+  <link rel="preload" as="image" href="Cuplikan layar 2026-09-18 200553.png" fetchpriority="high">
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts -->
@@ -19,6 +25,7 @@
       background: radial-gradient(circle at center, #182e25 0%, #07120d 60%, #020604 100%);
       touch-action: pan-y;
       -webkit-tap-highlight-color: transparent;
+      overscroll-behavior: none;
     }
     
     .invitation-frame {
@@ -29,21 +36,29 @@
       max-height: 96vh;
       max-height: 96dvh;
       box-shadow: 0 0 60px rgba(0, 0, 0, 0.95), 0 0 25px rgba(212, 175, 55, 0.25);
+      transform: translateZ(0);
+      contain: layout style;
     }
 
-    /* Animasi Putaran Piringan Musik */
+    /* Animasi Putaran Piringan Musik (GPU Accelerated) */
     @keyframes spin-disc {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      0% { transform: rotate3d(0, 0, 1, 0deg); }
+      100% { transform: rotate3d(0, 0, 1, 360deg); }
     }
     .spin-active {
       animation: spin-disc 5s linear infinite;
+      will-change: transform;
     }
 
-    /* Equalizer Audio Bar */
+    /* Equalizer Audio Bar (Transform ScaleY agar tidak memicu Layout Reflow) */
     @keyframes soundwave {
-      0%, 100% { height: 4px; }
-      50% { height: 16px; }
+      0%, 100% { transform: scaleY(0.25); }
+      50% { transform: scaleY(1); }
+    }
+    .wave-bar-1, .wave-bar-2, .wave-bar-3 {
+      height: 16px;
+      transform-origin: bottom center;
+      will-change: transform;
     }
     .wave-bar-1 { animation: soundwave 1.2s infinite ease-in-out; }
     .wave-bar-2 { animation: soundwave 0.8s infinite ease-in-out 0.2s; }
@@ -51,54 +66,58 @@
 
     /* Elemen Kartu Kaca Slide 7 */
     .futuristic-card {
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       border: 1px solid rgba(212, 175, 55, 0.4);
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0,0,0,0.05);
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease;
+      transform: translateZ(0);
     }
     .futuristic-card:hover, .futuristic-card:active {
       border-color: rgba(212, 175, 55, 0.8);
-      transform: translateY(-1px);
+      transform: translate3d(0, -1px, 0);
       box-shadow: 0 6px 20px rgba(16, 185, 129, 0.12), 0 0 12px rgba(212, 175, 55, 0.2);
     }
 
     /* Radar Gelombang Live Stream */
     @keyframes cyber-radar {
-      0% { transform: scale(0.75); opacity: 0.9; }
-      50% { transform: scale(1.3); opacity: 0.35; }
-      100% { transform: scale(1.75); opacity: 0; }
+      0% { transform: scale3d(0.75, 0.75, 1); opacity: 0.9; }
+      50% { transform: scale3d(1.3, 1.3, 1); opacity: 0.35; }
+      100% { transform: scale3d(1.75, 1.75, 1); opacity: 0; }
     }
     .radar-pulse {
       animation: cyber-radar 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+      will-change: transform, opacity;
     }
 
     @keyframes live-glow {
       0%, 100% {
-        box-shadow: 0 0 14px rgba(220, 38, 38, 0.5), inset 0 0 8px rgba(255, 255, 255, 0.2);
+        transform: scale3d(1, 1, 1);
       }
       50% {
-        box-shadow: 0 0 25px rgba(220, 38, 38, 0.8), 0 0 40px rgba(220, 38, 38, 0.35);
+        transform: scale3d(1.015, 1.015, 1);
       }
     }
     .live-button-futuristic {
+      box-shadow: 0 0 20px rgba(220, 38, 38, 0.65), inset 0 0 8px rgba(255, 255, 255, 0.2);
       animation: live-glow 2s infinite ease-in-out;
+      will-change: transform;
     }
 
-    /* Animasi Kaligrafi */
+    /* Animasi Kaligrafi (GPU Friendly) */
     @keyframes prophet-halo {
       0%, 100% {
-        filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5)) drop-shadow(0 4px 15px rgba(0, 0, 0, 0.3));
-        transform: scale(1);
+        transform: scale3d(1, 1, 1);
       }
       50% {
-        filter: drop-shadow(0 0 20px rgba(245, 222, 120, 0.8)) drop-shadow(0 6px 20px rgba(0, 0, 0, 0.4));
-        transform: scale(1.03);
+        transform: scale3d(1.03, 1.03, 1);
       }
     }
     .prophet-emblem {
+      filter: drop-shadow(0 0 14px rgba(212, 175, 55, 0.65)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.35));
       animation: prophet-halo 3.5s infinite ease-in-out;
+      will-change: transform;
     }
 
     /* Pola Bilah Samping Kiri (Spine Pattern) */
@@ -114,6 +133,7 @@
     /* Desain Amplop Kerajaan */
     .envelope-box {
       perspective: 1600px;
+      transform: translateZ(0);
     }
 
     .env-top-flap {
@@ -124,9 +144,11 @@
       height: 48%;
       clip-path: polygon(0 0, 100% 0, 100% 28%, 50% 100%, 0 28%);
       transform-origin: top center;
-      transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.2s;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.2s;
       z-index: 35;
-      filter: drop-shadow(0 14px 20px rgba(0,0,0,0.75));
+      filter: drop-shadow(0 12px 16px rgba(0,0,0,0.7));
+      will-change: transform;
+      backface-visibility: hidden;
     }
 
     .env-top-flap::after {
@@ -148,6 +170,7 @@
       clip-path: polygon(0 34%, 50% 0, 100% 34%, 100% 100%, 0 100%);
       z-index: 30;
       box-shadow: inset 0 1px 12px rgba(212, 175, 55, 0.2);
+      transform: translateZ(0);
     }
 
     .env-bottom-pocket::before {
@@ -169,8 +192,10 @@
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-      transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.7s ease;
+      transition: transform 0.85s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.7s ease;
       z-index: 20;
+      will-change: transform;
+      transform: translateZ(0);
     }
 
     /* Lingkaran Pengait Segel Amplop */
@@ -186,6 +211,7 @@
       justify-content: center;
       transition: transform 0.4s ease, opacity 0.4s ease;
       overflow: hidden;
+      will-change: transform, opacity;
     }
 
     .envelope-opening .env-top-flap {
@@ -194,15 +220,17 @@
     }
 
     .envelope-opening .royal-wax-seal {
-      transform: scale(1.2) rotate(15deg);
+      transform: scale3d(1.2, 1.2, 1) rotate(15deg);
       opacity: 0;
     }
 
     .envelope-opening .env-inner-card {
-      transform: translateY(-8%) scale(1.03);
+      transform: translate3d(0, -8%, 0) scale3d(1.03, 1.03, 1);
     }
 
-    /* Simulasi Halaman Kertas (Page Curl 3D) */
+    /* ============================================================ */
+    /* SIMULASI HALAMAN KERTAS 3D (DIOPTIMALKAN UNTUK GPU MOBILE)   */
+    /* ============================================================ */
     .slide-viewport {
       position: relative;
       width: 100%;
@@ -210,19 +238,31 @@
       overflow: hidden;
       perspective: 2000px;
       perspective-origin: 0% 50%;
+      transform: translateZ(0);
     }
 
+    /* PENTING: Menggunakan visibility & opacity (bukan display:none) 
+       agar tekstur gambar PNG tetap tersimpan di VRAM GPU HP */
     .page-slide {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       transform-origin: 0% 50%;
-      will-change: transform, opacity;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
       pointer-events: none;
-      display: none;
+      visibility: hidden;
+      opacity: 0;
+      z-index: 0;
+      transform: translate3d(0, 0, 0);
+      contain: layout paint style;
+    }
+
+    .page-slide > img {
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
 
     .page-slide::before {
@@ -237,158 +277,155 @@
       z-index: 15;
     }
 
+    /* Bayangan Lipatan Kertas (Menggunakan Transform GPU, Bukan Background-Position) */
     .paper-curl-shade {
       position: absolute;
-      inset: 0;
+      top: 0;
+      bottom: 0;
+      left: -80%;
+      width: 260%;
       pointer-events: none;
       z-index: 25;
       opacity: 0;
       background: linear-gradient(110deg,
-        transparent 0%,
-        rgba(0,0,0,0.04) 22%,
-        rgba(0,0,0,0.3) 42%,
+        rgba(0,0,0,0.45) 0%,
+        rgba(0,0,0,0.12) 28%,
+        rgba(0,0,0,0.32) 44%,
         rgba(255,255,255,0.48) 50%,
-        rgba(0,0,0,0.32) 58%,
-        rgba(0,0,0,0.06) 76%,
+        rgba(0,0,0,0.35) 56%,
+        rgba(0,0,0,0.08) 72%,
         transparent 100%
       );
-      background-size: 260% 100%;
+      transform: translate3d(0, 0, 0);
+      will-change: transform, opacity;
     }
 
     .page-slide.active {
-      display: block;
-      transform: rotateY(0deg) skewY(0deg) scale(1);
+      visibility: visible;
+      transform: translate3d(0, 0, 0) rotateY(0deg) skewY(0deg) scale3d(1, 1, 1);
       opacity: 1;
       pointer-events: auto;
       z-index: 20;
     }
 
     .page-slide.underneath {
-      display: block;
-      transform: rotateY(0deg) scale(1);
+      visibility: visible;
+      transform: translate3d(0, 0, 0) rotateY(0deg) scale3d(1, 1, 1);
       opacity: 1;
       pointer-events: none;
       z-index: 10;
     }
 
     .page-slide.curl-forward {
-      display: block;
-      animation: pageCurlForwardAnim 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      visibility: visible;
+      will-change: transform, opacity;
+      animation: pageCurlForwardAnim 0.68s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
       z-index: 30;
       pointer-events: none;
     }
 
     .page-slide.curl-forward .paper-curl-shade {
-      animation: paperShineForward 0.8s linear forwards;
+      animation: paperShineForward 0.68s linear forwards;
     }
 
     @keyframes pageCurlForwardAnim {
       0% {
-        transform: rotateY(0deg) skewY(0deg) scale(1);
-        filter: brightness(1);
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        transform: rotateY(0deg) skewY(0deg) scale3d(1, 1, 1);
+        opacity: 1;
       }
       28% {
-        transform: rotateY(-26deg) skewY(4.5deg) scaleY(0.975) scaleX(0.97) translateZ(35px);
-        filter: brightness(0.95);
-        box-shadow: -15px 12px 30px rgba(0,0,0,0.35);
+        transform: rotateY(-26deg) skewY(4.5deg) scale3d(0.97, 0.975, 1) translateZ(35px);
+        opacity: 1;
       }
       62% {
-        transform: rotateY(-68deg) skewY(3.8deg) scaleY(0.95) scaleX(0.95) translateZ(48px);
-        filter: brightness(0.82);
-        box-shadow: -28px 18px 45px rgba(0,0,0,0.45);
+        transform: rotateY(-68deg) skewY(3.8deg) scale3d(0.95, 0.95, 1) translateZ(48px);
+        opacity: 0.96;
       }
       85% {
-        transform: rotateY(-98deg) skewY(1.2deg) scaleY(0.97) translateZ(20px);
-        filter: brightness(0.7);
-        opacity: 0.9;
+        transform: rotateY(-98deg) skewY(1.2deg) scale3d(0.95, 0.97, 1) translateZ(20px);
+        opacity: 0.85;
       }
       100% {
-        transform: rotateY(-125deg) skewY(0deg) scale(0.92);
-        filter: brightness(0.5);
+        transform: rotateY(-125deg) skewY(0deg) scale3d(0.92, 0.92, 1);
         opacity: 0;
-        box-shadow: none;
       }
     }
 
     @keyframes paperShineForward {
-      0% { opacity: 0; background-position: 100% 0%; }
-      30% { opacity: 0.95; background-position: 65% 0%; }
-      70% { opacity: 0.85; background-position: 30% 0%; }
-      100% { opacity: 0; background-position: 0% 0%; }
+      0% { opacity: 0; transform: translate3d(28%, 0, 0); }
+      30% { opacity: 0.95; transform: translate3d(10%, 0, 0); }
+      70% { opacity: 0.9; transform: translate3d(-12%, 0, 0); }
+      100% { opacity: 0; transform: translate3d(-28%, 0, 0); }
     }
 
     .page-slide.curl-backward {
-      display: block;
-      animation: pageCurlBackwardAnim 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      visibility: visible;
+      will-change: transform, opacity;
+      animation: pageCurlBackwardAnim 0.68s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
       z-index: 30;
       pointer-events: none;
     }
 
     .page-slide.curl-backward .paper-curl-shade {
-      animation: paperShineBackward 0.8s linear forwards;
+      animation: paperShineBackward 0.68s linear forwards;
     }
 
     @keyframes pageCurlBackwardAnim {
       0% {
-        transform: rotateY(-125deg) skewY(0deg) scale(0.92);
-        filter: brightness(0.5);
+        transform: rotateY(-125deg) skewY(0deg) scale3d(0.92, 0.92, 1);
         opacity: 0;
       }
       20% {
-        opacity: 0.95;
-        transform: rotateY(-98deg) skewY(-1.2deg) scaleY(0.96) translateZ(20px);
-        filter: brightness(0.75);
+        opacity: 0.92;
+        transform: rotateY(-98deg) skewY(-1.2deg) scale3d(0.95, 0.96, 1) translateZ(20px);
       }
       58% {
-        transform: rotateY(-55deg) skewY(-4deg) scaleY(0.95) scaleX(0.96) translateZ(48px);
-        filter: brightness(0.88);
-        box-shadow: -25px 15px 38px rgba(0,0,0,0.4);
+        transform: rotateY(-55deg) skewY(-4deg) scale3d(0.96, 0.95, 1) translateZ(48px);
+        opacity: 0.98;
       }
       82% {
-        transform: rotateY(-18deg) skewY(-2.5deg) scaleY(0.98) scaleX(0.98) translateZ(25px);
-        filter: brightness(0.98);
-        box-shadow: -10px 8px 20px rgba(0,0,0,0.25);
+        transform: rotateY(-18deg) skewY(-2.5deg) scale3d(0.98, 0.98, 1) translateZ(25px);
+        opacity: 1;
       }
       100% {
-        transform: rotateY(0deg) skewY(0deg) scale(1);
-        filter: brightness(1);
+        transform: rotateY(0deg) skewY(0deg) scale3d(1, 1, 1);
         opacity: 1;
-        box-shadow: none;
       }
     }
 
     @keyframes paperShineBackward {
-      0% { opacity: 0; background-position: 0% 0%; }
-      30% { opacity: 0.85; background-position: 35% 0%; }
-      70% { opacity: 0.95; background-position: 70% 0%; }
-      100% { opacity: 0; background-position: 100% 0%; }
+      0% { opacity: 0; transform: translate3d(-28%, 0, 0); }
+      30% { opacity: 0.9; transform: translate3d(-10%, 0, 0); }
+      70% { opacity: 0.95; transform: translate3d(12%, 0, 0); }
+      100% { opacity: 0; transform: translate3d(28%, 0, 0); }
     }
 
-    /* Pendaran Tombol Buka */
+    /* Pendaran Tombol Buka (Diisolasi ke GPU Layer agar tidak memicu Repaint) */
     @keyframes luxury-glow {
       0%, 100% {
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.45), 0 0 40px rgba(180, 25, 25, 0.35);
-        transform: scale(1);
+        transform: scale3d(1, 1, 1);
       }
       50% {
-        box-shadow: 0 0 35px rgba(212, 175, 55, 0.85), 0 0 65px rgba(212, 175, 55, 0.55);
-        transform: scale(1.03);
+        transform: scale3d(1.03, 1.03, 1);
       }
     }
     .luxury-btn {
+      box-shadow: 0 0 28px rgba(212, 175, 55, 0.65), 0 0 50px rgba(180, 25, 25, 0.45);
       animation: luxury-glow 2.4s infinite ease-in-out;
+      will-change: transform;
+      transform: translateZ(0);
     }
 
     /* Toast Notifikasi */
     #toast {
-      transition: all 0.3s ease;
-      transform: translate(-50%, 20px);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      transform: translate3d(-50%, 20px, 0);
       opacity: 0;
       pointer-events: none;
+      will-change: transform, opacity;
     }
     #toast.show {
-      transform: translate(-50%, 0);
+      transform: translate3d(-50%, 0, 0);
       opacity: 1;
       pointer-events: auto;
     }
@@ -401,22 +438,26 @@
       height: 100%;
       pointer-events: none;
       z-index: 30;
+      transform: translateZ(0);
     }
 
     /* Modal Verifikasi Tamu VIP */
     #authModal {
-      backdrop-filter: blur(14px);
-      transition: opacity 0.4s ease, visibility 0.4s ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+      will-change: opacity;
     }
     #authCard {
       box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 35px rgba(212, 175, 55, 0.4);
+      transform: translateZ(0);
     }
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-0 sm:p-3 overflow-hidden select-none">
 
-  <!-- Audio Pemutar Sholawat -->
-  <audio id="audioPlayer" loop preload="auto" playsinline>
+  <!-- Audio Pemutar Sholawat (Preload diatur cerdas agar tidak menghambat gambar sampul) -->
+  <audio id="audioPlayer" loop preload="metadata" playsinline>
     <source src="MAHALLUL QIYAM UHA.MP3" type="audio/mpeg">
     <source src="MAHALLUL%20QIYAM%20UHA.MP3" type="audio/mpeg">
     <source src="mahallul qiyam uha.mp3" type="audio/mpeg">
@@ -424,7 +465,7 @@
   </audio>
 
   <!-- HUD Mini Equalizer & Kontrol Suara -->
-  <div id="musicHUD" class="fixed top-3 right-3 z-50 flex items-center gap-2 bg-black/70 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-amber-500/50 shadow-2xl transition-all duration-500 opacity-0 pointer-events-none">
+  <div id="musicHUD" class="fixed top-3 right-3 z-50 flex items-center gap-2 bg-black/70 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-amber-500/50 shadow-2xl transition-opacity duration-500 opacity-0 pointer-events-none">
     <div class="flex items-end gap-[3px] h-4">
       <span class="w-[2px] bg-amber-400 rounded-full wave-bar-1"></span>
       <span class="w-[2px] bg-amber-400 rounded-full wave-bar-2"></span>
@@ -511,6 +552,8 @@
         <!-- Background Foto Masjid Utama -->
         <img 
           src="fbebf820c10f22e1b222d929f1682333.jpg?v=fresh" 
+          fetchpriority="high"
+          decoding="async"
           onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='masjid.jpg';} else if(this.dataset.retry==='1'){this.dataset.retry='2'; this.src='https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=1000&auto=format&fit=crop';}" 
           alt="" 
           class="absolute inset-0 w-full h-full object-cover filter blur-[2px] brightness-[0.38] contrast-[1.1] opacity-45 pointer-events-none">
@@ -524,7 +567,7 @@
 
         <!-- Kartu di dalam amplop -->
         <div class="env-inner-card border border-amber-400/30">
-          <img src="UNDANGAN MAULID VVIP.png?v=fresh" alt="Kartu Maulid Akbar" class="w-full h-full object-cover">
+          <img src="UNDANGAN MAULID VVIP.png?v=fresh" fetchpriority="high" decoding="async" alt="Kartu Maulid Akbar" class="w-full h-full object-cover">
           <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30 pointer-events-none"></div>
         </div>
 
@@ -532,6 +575,7 @@
         <div class="env-top-flap flex items-center justify-center overflow-hidden relative">
           <img 
             src="fbebf820c10f22e1b222d929f1682333.jpg?v=fresh" 
+            decoding="async"
             onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='masjid.jpg';} else if(this.dataset.retry==='1'){this.dataset.retry='2'; this.src='https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=1000&auto=format&fit=crop';}" 
             alt="" 
             class="absolute inset-0 w-full h-full object-cover object-top filter blur-[1px] brightness-[0.42] contrast-[1.1] opacity-60 pointer-events-none">
@@ -542,6 +586,7 @@
         <div class="env-bottom-pocket overflow-hidden relative">
           <img 
             src="fbebf820c10f22e1b222d929f1682333.jpg?v=fresh" 
+            decoding="async"
             onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='masjid.jpg';} else if(this.dataset.retry==='1'){this.dataset.retry='2'; this.src='https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=1000&auto=format&fit=crop';}" 
             alt="" 
             class="absolute inset-0 w-full h-full object-cover object-bottom filter blur-[1px] brightness-[0.55] contrast-[1.1] opacity-70">
@@ -556,6 +601,8 @@
           <div class="royal-wax-seal mb-3 pointer-events-auto transform hover:scale-105 transition-transform cursor-pointer" onclick="handleTombolBuka()" title="Buka Undangan">
             <img 
               src="Cuplikan layar 2026-09-18 200553.png" 
+              fetchpriority="high"
+              decoding="async"
               onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='Cuplikan layar 2026-09-18 200553.jpg';} else if(this.dataset.retry==='1'){this.dataset.retry='2'; this.src='logo.png';}" 
               alt="Logo MTQL" 
               class="w-full h-full object-cover rounded-full">
@@ -592,21 +639,22 @@
       <div id="slide-1" class="page-slide active">
         <img 
           src="UNDANGAN MAULID VVIP.png?v=fresh" 
+          decoding="async"
           onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='UNDANGAN.png?v=fresh';}" 
           alt="Undangan Maulid Preview Penuh" 
-          class="w-full h-full object-fill">
+          class="w-full h-full object-fill slide-img">
         <div class="paper-curl-shade"></div>
       </div>
 
       <!-- Slide 2: MUQODDIMAH.png -->
       <div id="slide-2" class="page-slide">
-        <img src="MUQODDIMAH.png?v=fresh" alt="Muqoddimah" class="w-full h-full object-fill">
+        <img src="MUQODDIMAH.png?v=fresh" decoding="async" alt="Muqoddimah" class="w-full h-full object-fill slide-img">
         <div class="paper-curl-shade"></div>
       </div>
 
       <!-- Slide 3: HALAMAN UNDANGAN DENGAN NAMA TAMU & NOMOR VIP -->
       <div id="slide-3" class="page-slide">
-        <img src="UNDANGAN.png?v=fresh" onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='UNDANGAN MAULID VVIP.png?v=fresh';}" alt="Undangan VIP" class="w-full h-full object-fill">
+        <img src="UNDANGAN.png?v=fresh" decoding="async" onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='UNDANGAN MAULID VVIP.png?v=fresh';}" alt="Undangan VIP" class="w-full h-full object-fill slide-img">
         
         <!-- Lencana Nomor Urut VIP -->
         <div id="nomorBadgeBox" class="absolute z-20 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300" style="top: 70.2%; left: 23.0%; width: 73.0%; height: 3.2%;">
@@ -626,7 +674,7 @@
 
       <!-- Slide 4: ACARA.png -->
       <div id="slide-4" class="page-slide">
-        <img src="ACARA.png?v=fresh" alt="Acara" class="w-full h-full object-fill">
+        <img src="ACARA.png?v=fresh" decoding="async" alt="Acara" class="w-full h-full object-fill slide-img">
 
         <!-- Area Sentuh Peta Lokasi At-Tin -->
         <a href="https://maps.app.goo.gl/f7aA17GN3GxNhQ2c6" target="_blank" rel="noopener noreferrer" class="absolute z-30 cursor-pointer rounded-full" style="top: 68.5%; left: 45%; width: 20%; height: 7.5%;" title="Buka Lokasi Masjid Agung At-Tin di Google Maps"></a>
@@ -646,7 +694,7 @@
 
       <!-- Slide 5: KETENTUAN.png -->
       <div id="slide-5" class="page-slide">
-        <img src="KETENTUAN.png?v=fresh" alt="Ketentuan Tamu VIP" class="w-full h-full object-fill">
+        <img src="KETENTUAN.png?v=fresh" decoding="async" alt="Ketentuan Tamu VIP" class="w-full h-full object-fill slide-img">
 
         <!-- Tautan Lokasi MTQL & MTNH -->
         <a href="https://maps.app.goo.gl/ghPvMXjdz2fY6jxw5" target="_blank" rel="noopener noreferrer" class="absolute z-30 cursor-pointer block" style="top: 24.5%; left: 14%; width: 58%; height: 4%;" title="Buka Lokasi MTQL di Google Maps"></a>
@@ -656,7 +704,7 @@
 
       <!-- Slide 6: IKHTITAM.png -->
       <div id="slide-6" class="page-slide">
-        <img src="IKHTITAM.png?v=fresh" alt="Ikhtitam" class="w-full h-full object-fill">
+        <img src="IKHTITAM.png?v=fresh" decoding="async" alt="Ikhtitam" class="w-full h-full object-fill slide-img">
         <div class="paper-curl-shade"></div>
       </div>
 
@@ -686,9 +734,10 @@
           <div class="absolute inset-0 pointer-events-none overflow-hidden">
             <img 
               src="fbebf820c10f22e1b222d929f1682333.jpg?v=fresh" 
+              decoding="async"
               onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='masjid.jpg';} else if(this.dataset.retry==='1'){this.dataset.retry='2'; this.src='https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=1000&auto=format&fit=crop';}" 
               alt="" 
-              class="absolute inset-0 w-full h-full object-cover filter contrast-[1.15] brightness-[1.02] saturate-[1.12] opacity-80" 
+              class="absolute inset-0 w-full h-full object-cover filter contrast-[1.15] brightness-[1.02] saturate-[1.12] opacity-80 slide-img" 
               style="object-position: center center;">
             
             <div class="absolute inset-0 bg-gradient-to-b from-[#fffdfa]/60 via-transparent to-[#f7f0e4]/50"></div>
@@ -789,9 +838,10 @@
               <div class="prophet-emblem flex flex-col items-center justify-center">
                 <img 
                   src="dabde5306bc60fcce558686108a084e1.jpg?v=fresh" 
+                  decoding="async"
                   onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='muhammad.jpg';} else if(this.dataset.retry==='1'){this.dataset.retry='2'; this.src='https://upload.wikimedia.org/wikipedia/commons/3/3d/Muhammad2.png';}" 
                   alt="Kaligrafi Muhammad Rasulullah" 
-                  class="w-40 h-auto sm:w-44 sm:h-auto object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.55)]">
+                  class="w-40 h-auto sm:w-44 sm:h-auto object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.55)] slide-img">
               </div>
             </div>
 
@@ -912,6 +962,38 @@
   <!-- ============================================================== -->
   <script>
     localStorage.removeItem('maulid_vip_guest');
+
+    // PRE-DECODE SEMUA GAMBAR SLIDE KE MEMORI GPU (VRAM) DI LATAR BELAKANG
+    // Ini memastikan saat tamu menggeser halaman di HP, gambar langsung siap tanpa jeda/putih
+    function preloadAndDecodeSlides() {
+      const slideImages = document.querySelectorAll('.slide-img');
+      slideImages.forEach((img, idx) => {
+        const decodeImage = () => {
+          if (typeof img.decode === 'function') {
+            img.decode().catch(() => {});
+          }
+        };
+        if (img.complete) {
+          decodeImage();
+        } else {
+          img.addEventListener('load', decodeImage, { once: true });
+        }
+      });
+
+      // Setelah gambar mulai dimuat, aktifkan preload penuh untuk audio sholawat
+      setTimeout(() => {
+        const audioEl = document.getElementById('audioPlayer');
+        if (audioEl && audioEl.preload !== 'auto') {
+          audioEl.preload = 'auto';
+        }
+      }, 600);
+    }
+
+    if (document.readyState === 'complete') {
+      preloadAndDecodeSlides();
+    } else {
+      window.addEventListener('load', preloadAndDecodeSlides, { once: true });
+    }
 
     // KONFIGURASI GOOGLE SPREADSHEET RESMI
     const SPREADSHEET_ID = '1-jgBw-gWk-451E_1mCoeqYjV6-2d-N_90efBnDUwSK4';
@@ -1040,6 +1122,8 @@
     const nomorEl = document.getElementById('slideNomorVVIP');
     const guestEl = document.getElementById('slideGuestName');
     const btnBuka = document.getElementById('btnBukaUndangan');
+    let isCoverOpen = false;
+    let isModalOpen = false;
 
     const urlParams = new URLSearchParams(window.location.search);
     const paramTamu = urlParams.get('to') || urlParams.get('nama');
@@ -1057,13 +1141,15 @@
     }
 
     function showAuthModal() {
+      isModalOpen = true;
       authErrorMsg.classList.add('hidden');
       guestInput.value = '';
       authModal.classList.remove('opacity-0', 'pointer-events-none');
-      setTimeout(() => guestInput.focus(), 250);
+      setTimeout(() => guestInput.focus(), 200);
     }
 
     function closeAuthModal() {
+      isModalOpen = false;
       authModal.classList.add('opacity-0', 'pointer-events-none');
     }
 
@@ -1129,17 +1215,18 @@
     }, false);
 
     function lanjutBukaUndangan() {
+      isCoverOpen = true;
       const gate = document.getElementById('gateOverlay');
       gate.classList.add('envelope-opening');
 
       setTimeout(() => {
-        gate.style.transform = 'scale(1.08)';
+        gate.style.transform = 'scale3d(1.08, 1.08, 1)';
         gate.classList.add('opacity-0', 'pointer-events-none');
-      }, 550);
+      }, 500);
 
       setTimeout(() => {
         gate.style.display = 'none';
-      }, 1050);
+      }, 950);
 
       musicHUD.classList.remove('opacity-0', 'pointer-events-none');
       swipeHintBox.classList.remove('hidden');
@@ -1177,11 +1264,12 @@
     }
 
     function kembaliKeCover() {
+      isCoverOpen = false;
       const gate = document.getElementById('gateOverlay');
       gate.classList.remove('envelope-opening');
       gate.style.display = 'flex';
       setTimeout(() => {
-        gate.style.transform = 'scale(1)';
+        gate.style.transform = 'scale3d(1, 1, 1)';
         gate.classList.remove('opacity-0', 'pointer-events-none');
       }, 20);
 
@@ -1196,7 +1284,7 @@
       musicIcon.classList.remove('spin-active');
     }
 
-    // Logika Pembalik Lembaran Kertas Lemas 3D (Total 7 Slide)
+    // Logika Pembalik Lembaran Kertas Lemas 3D (Total 7 Slide - Ultra Responsif)
     let currentSlide = 1;
     const totalSlides = 7;
 
@@ -1229,7 +1317,7 @@
           toElem.className = 'page-slide active';
           currentSlide = toSlide;
           isPageTurning = false;
-        }, 800);
+        }, 680);
       } else {
         fromElem.className = 'page-slide underneath';
         toElem.className = 'page-slide curl-backward';
@@ -1239,7 +1327,7 @@
           toElem.className = 'page-slide active';
           currentSlide = toSlide;
           isPageTurning = false;
-        }, 800);
+        }, 680);
       }
     }
 
@@ -1273,21 +1361,20 @@
 
     // Countdown Real-Time Menuju 29 Oktober 2026 06:30 WIB
     const targetDate = new Date("2026-10-29T06:30:00+07:00").getTime();
+    const elDays = document.getElementById('cdDays');
+    const elHours = document.getElementById('cdHours');
+    const elMins = document.getElementById('cdMins');
+    const elSecs = document.getElementById('cdSecs');
 
     function updateCountdown() {
-      const now = new Date().getTime();
+      const now = Date.now();
       const diff = targetDate - now;
 
       if (diff > 0) {
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        const elDays = document.getElementById('cdDays');
-        const elHours = document.getElementById('cdHours');
-        const elMins = document.getElementById('cdMins');
-        const elSecs = document.getElementById('cdSecs');
+        const days = Math.floor(diff / 86400000);
+        const hours = Math.floor((diff % 86400000) / 3600000);
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
 
         if (elDays) elDays.innerText = String(days).padStart(2, '0');
         if (elHours) elHours.innerText = String(hours).padStart(2, '0');
@@ -1298,29 +1385,39 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    // Dukungan Usap Layar Sentuh HP (Swipe Gesture)
+    // Dukungan Usap Layar Sentuh HP (Passive Gesture Listener - Tidak Memblokir Main Thread)
     let touchStartX = 0;
-    let touchEndX = 0;
+    let touchStartY = 0;
 
     document.addEventListener('touchstart', e => {
+      if (!isCoverOpen || isModalOpen) return;
       touchStartX = e.changedTouches[0].screenX;
-    }, false);
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
 
     document.addEventListener('touchend', e => {
-      touchEndX = e.changedTouches[0].screenX;
-      if (touchEndX < touchStartX - 35) nextSlide();
-      if (touchEndX > touchStartX + 35) prevSlide();
-    }, false);
+      if (!isCoverOpen || isModalOpen) return;
+      const touchEndX = e.changedTouches[0].screenX;
+      const touchEndY = e.changedTouches[0].screenY;
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = Math.abs(touchEndY - touchStartY);
 
-    // Animasi Partikel Kelopak Mawar & Kilau Bintang
+      // Pastikan gerakan benar-benar swipe mendatar
+      if (Math.abs(deltaX) > 38 && deltaY < 90) {
+        if (deltaX < 0) nextSlide();
+        else prevSlide();
+      }
+    }, { passive: true });
+
+    // Animasi Partikel Kelopak Mawar & Kilau Bintang (Tanpa shadowBlur yang Berat di HP)
     const canvas = document.getElementById('fxCanvas');
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
 
     function resizeCanvas() {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+      canvas.width = canvas.offsetWidth || 380;
+      canvas.height = canvas.offsetHeight || 680;
     }
-    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('resize', resizeCanvas, { passive: true });
     resizeCanvas();
 
     const petalCount = 16;
@@ -1375,15 +1472,20 @@
         if (this.opacity > 0.9 || this.opacity < 0.1) this.delta = -this.delta;
       }
       draw() {
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, this.opacity);
+        const alpha = Math.max(0, this.opacity);
+        // Lingkaran Halo Luar (Pengganti shadowBlur=4 yang jauh lebih ringan di GPU HP)
+        ctx.globalAlpha = alpha * 0.28;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 2.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Inti Bintang Emas
+        ctx.globalAlpha = alpha;
         ctx.fillStyle = '#ffd700';
-        ctx.shadowColor = '#fff';
-        ctx.shadowBlur = 4;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
-        ctx.restore();
       }
     }
 
@@ -1398,8 +1500,14 @@
 
     function animateFX() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      sparks.forEach(s => { s.update(); s.draw(); });
-      petals.forEach(p => { p.update(); p.draw(); });
+      for (let i = 0; i < sparkCount; i++) {
+        sparks[i].update();
+        sparks[i].draw();
+      }
+      for (let i = 0; i < petalCount; i++) {
+        petals[i].update();
+        petals[i].draw();
+      }
       requestAnimationFrame(animateFX);
     }
     animateFX();
