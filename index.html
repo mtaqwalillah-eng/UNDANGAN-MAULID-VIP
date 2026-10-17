@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta id="viewportMeta" name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>Undangan VIP - Maulid Akbar Satu Cinta Annisa Haula Rosul</title>
 
   <!-- Koneksi Awal ke Server Cloud & Font -->
@@ -19,7 +19,7 @@
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       background: radial-gradient(circle at center, #182e25 0%, #07120d 60%, #020604 100%);
-      touch-action: pan-y;
+      touch-action: none;
       -webkit-tap-highlight-color: transparent;
       overscroll-behavior: none;
     }
@@ -32,6 +32,8 @@
       max-height: 96vh;
       max-height: 96dvh;
       box-shadow: 0 0 60px rgba(0, 0, 0, 0.95), 0 0 25px rgba(212, 175, 55, 0.25);
+      touch-action: none;
+      transform-origin: center center;
     }
 
     /* Animasi Putaran Piringan Musik */
@@ -454,7 +456,7 @@
   </div>
 
   <!-- CONTAINER UTAMA -->
-  <main class="invitation-frame relative bg-stone-100 sm:rounded-2xl overflow-hidden border border-amber-500/40 flex flex-col justify-between">
+  <main id="invitationFrame" class="invitation-frame relative bg-stone-100 sm:rounded-2xl overflow-hidden border border-amber-500/40 flex flex-col justify-between">
 
     <!-- Kanvas Efek Partikel -->
     <canvas id="fxCanvas"></canvas>
@@ -885,6 +887,7 @@
     const musicHUD = document.getElementById('musicHUD');
     const musicIcon = document.getElementById('musicIcon');
     const swipeHintBox = document.getElementById('swipeHintBox');
+    const invitationFrame = document.getElementById('invitationFrame');
     let isMusicPlaying = false;
     let isPageTurning = false;
     let isCoverOpen = false;
@@ -1214,6 +1217,7 @@
     }
 
     function lanjutBukaUndangan() {
+      resetZoom(false);
       const gate = document.getElementById('gateOverlay');
       gate.classList.add('envelope-opening');
 
@@ -1264,6 +1268,8 @@
     }
 
     function kembaliKeCover() {
+      if (isGestureMultiTouch || (Date.now() - lastPinchEndTime < 350)) return;
+      resetZoom(false);
       isCoverOpen = false;
       const gate = document.getElementById('gateOverlay');
       gate.classList.remove('envelope-opening');
@@ -1289,7 +1295,12 @@
     const totalSlides = 7;
 
     function pindahSlide(target, force = false) {
+      if (!force && (isGestureMultiTouch || (Date.now() - lastPinchEndTime < 350))) return;
       if ((target === currentSlide || isPageTurning) && !force) return;
+
+      if (zoomScale > 1) {
+        resetZoom(false);
+      }
 
       const fromSlide = currentSlide;
       const toSlide = target;
@@ -1377,24 +1388,303 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    // Dukungan Usap Layar Sentuh HP
+    // =========================================================================
+    // 4. ENGINE PINCH-TO-ZOOM, PANNING & SWIPE ANTI-BENTROK (SEMUA DEVICE HP)
+    // Hanya aktif setelah nama diverifikasi (isCoverOpen === true) dan tidak
+    // akan memicu perpindahan slide ketika pengguna sedang zoom in / zoom out.
+    // =========================================================================
+    let zoomScale = 1;
+    let panX = 0;
+    let panY = 0;
+
+    let startPinchDist = 0;
+    let startPinchScale = 1;
+    let startPinchPanX = 0;
+    let startPinchPanY = 0;
+    let startPinchMidX = 0;
+    let startPinchMidY = 0;
+
+    let panStartFingerX = 0;
+    let panStartFingerY = 0;
+
     let touchStartX = 0;
     let touchStartY = 0;
+    let isGestureMultiTouch = false;
+    let wasZoomedDuringGesture = false;
+    let didPanOrPinchMove = false;
+    let lastPinchEndTime = 0;
+
+    function getNativeViewportScale() {
+      if (window.visualViewport && typeof window.visualViewport.scale === 'number') {
+        return window.visualViewport.scale;
+      }
+      return 1;
+    }
+
+    function isAnyZoomActive() {
+      return zoomScale > 1.02 || getNativeViewportScale() > 1.05;
+    }
+
+    function clampPanOffsets(nx, ny, scale) {
+      if (!invitationFrame || scale <= 1.01) {
+        return { x: 0, y: 0 };
+      }
+      const w = invitationFrame.offsetWidth || 360;
+      const h = invitationFrame.offsetHeight || 640;
+      const maxX = (w * (scale - 1)) / 2;
+      const maxY = (h * (scale - 1)) / 2;
+      return {
+        x: Math.min(Math.max(nx, -maxX), maxX),
+        y: Math.min(Math.max(ny, -maxY), maxY)
+      };
+    }
+
+    function applyZoomTransform(animated = false) {
+      if (!invitationFrame) return;
+      if (animated) {
+        invitationFrame.style.transition = 'transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1)';
+      } else {
+        invitationFrame.style.transition = 'none';
+      }
+
+      if (zoomScale <= 1.01 && Math.abs(panX) < 0.5 && Math.abs(panY) < 0.5) {
+        invitationFrame.style.transform = '';
+        if (!animated) invitationFrame.style.transition = '';
+      } else {
+        invitationFrame.style.transform = `translate3d(${panX.toFixed(2)}px, ${panY.toFixed(2)}px, 0px) scale(${zoomScale.toFixed(4)})`;
+      }
+
+      if (animated) {
+        setTimeout(() => {
+          if (invitationFrame && zoomScale <= 1.01) {
+            invitationFrame.style.transition = '';
+            invitationFrame.style.transform = '';
+          }
+        }, 230);
+      }
+    }
+
+    function resetZoom(animated = true) {
+      zoomScale = 1;
+      panX = 0;
+      panY = 0;
+      applyZoomTransform(animated);
+    }
+
+    function getTouchDistance(t1, t2) {
+      return Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+    }
+
+    function getTouchMidpoint(t1, t2) {
+      return {
+        x: (t1.clientX + t2.clientX) / 2,
+        y: (t1.clientY + t2.clientY) / 2
+      };
+    }
+
+    // Jika browser melakukan perubahan skala visualViewport, catat waktunya agar tidak memicu swipe
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', () => {
+        lastPinchEndTime = Date.now();
+        if (getNativeViewportScale() > 1.05) {
+          wasZoomedDuringGesture = true;
+        }
+      }, { passive: true });
+    }
+
+    // Cegah gesture zoom bawaan Safari/WebView saat masih di Cover/Modal
+    document.addEventListener('gesturestart', e => {
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('gesturechange', e => {
+      e.preventDefault();
+    }, { passive: false });
+
+    // Cegah klik tidak sengaja pada tombol/tab saat pengguna selesai melakukan pinch atau pan
+    document.addEventListener('click', e => {
+      if (didPanOrPinchMove || (Date.now() - lastPinchEndTime < 350)) {
+        e.preventDefault();
+        e.stopPropagation();
+        didPanOrPinchMove = false;
+      }
+    }, true);
 
     document.addEventListener('touchstart', e => {
-      if (!isCoverOpen || isModalOpen) return;
-      touchStartX = e.changedTouches[0].screenX;
-      touchStartY = e.changedTouches[0].screenY;
-    }, { passive: true });
+      // Sebelum masuk halaman undangan (di Cover atau Modal Nama), kunci zoom sepenuhnya
+      if (!isCoverOpen || isModalOpen) {
+        if (e.touches.length > 1) {
+          e.preventDefault();
+        }
+        return;
+      }
+
+      // Jika 2 jari atau lebih menyentuh layar -> Mulai Pinch Zoom In / Out
+      if (e.touches.length >= 2) {
+        e.preventDefault();
+        isGestureMultiTouch = true;
+        wasZoomedDuringGesture = true;
+        didPanOrPinchMove = true;
+        lastPinchEndTime = Date.now();
+
+        const t1 = e.touches[0];
+        const t2 = e.touches[1];
+        startPinchDist = Math.max(getTouchDistance(t1, t2), 10);
+        startPinchScale = zoomScale;
+        startPinchPanX = panX;
+        startPinchPanY = panY;
+
+        const mid = getTouchMidpoint(t1, t2);
+        startPinchMidX = mid.x;
+        startPinchMidY = mid.y;
+        return;
+      }
+
+      // Jika 1 jari menyentuh layar
+      if (e.touches.length === 1) {
+        const t = e.touches[0];
+        touchStartX = t.clientX;
+        touchStartY = t.clientY;
+        didPanOrPinchMove = false;
+
+        if (isAnyZoomActive()) {
+          wasZoomedDuringGesture = true;
+          panStartFingerX = t.clientX - panX;
+          panStartFingerY = t.clientY - panY;
+        } else {
+          isGestureMultiTouch = false;
+          wasZoomedDuringGesture = false;
+        }
+      }
+    }, { passive: false });
+
+    document.addEventListener('touchmove', e => {
+      // Kunci zoom saat masih di Cover atau Modal Verifikasi Nama
+      if (!isCoverOpen || isModalOpen) {
+        if (e.touches.length > 1) {
+          e.preventDefault();
+        }
+        return;
+      }
+
+      // Proses Pinch Zoom In / Zoom Out dengan 2 jari
+      if (e.touches.length >= 2) {
+        e.preventDefault();
+        isGestureMultiTouch = true;
+        wasZoomedDuringGesture = true;
+        didPanOrPinchMove = true;
+        lastPinchEndTime = Date.now();
+
+        const t1 = e.touches[0];
+        const t2 = e.touches[1];
+        const currentDist = Math.max(getTouchDistance(t1, t2), 10);
+        const mid = getTouchMidpoint(t1, t2);
+
+        if (startPinchDist <= 0) {
+          startPinchDist = currentDist;
+          startPinchScale = zoomScale;
+          startPinchPanX = panX;
+          startPinchPanY = panY;
+          startPinchMidX = mid.x;
+          startPinchMidY = mid.y;
+        }
+
+        const newScale = Math.min(Math.max(1, startPinchScale * (currentDist / startPinchDist)), 4);
+
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        const ratio = newScale / startPinchScale;
+
+        const rawPanX = mid.x - cx - (startPinchMidX - cx - startPinchPanX) * ratio;
+        const rawPanY = mid.y - cy - (startPinchMidY - cy - startPinchPanY) * ratio;
+
+        const clamped = clampPanOffsets(rawPanX, rawPanY, newScale);
+        zoomScale = newScale;
+        panX = clamped.x;
+        panY = clamped.y;
+
+        applyZoomTransform(false);
+        return;
+      }
+
+      // Proses 1 jari (Panning saat ter-zoom, atau deteksi gerakan swipe saat normal)
+      if (e.touches.length === 1) {
+        const t = e.touches[0];
+        const moveDist = Math.hypot(t.clientX - touchStartX, t.clientY - touchStartY);
+
+        if (moveDist > 10) {
+          didPanOrPinchMove = true;
+        }
+
+        if (zoomScale > 1.02) {
+          e.preventDefault();
+          wasZoomedDuringGesture = true;
+          const rawX = t.clientX - panStartFingerX;
+          const rawY = t.clientY - panStartFingerY;
+          const clamped = clampPanOffsets(rawX, rawY, zoomScale);
+          panX = clamped.x;
+          panY = clamped.y;
+          applyZoomTransform(false);
+        }
+      }
+    }, { passive: false });
 
     document.addEventListener('touchend', e => {
       if (!isCoverOpen || isModalOpen) return;
-      const deltaX = e.changedTouches[0].screenX - touchStartX;
-      const deltaY = Math.abs(e.changedTouches[0].screenY - touchStartY);
 
-      if (Math.abs(deltaX) > 35 && deltaY < 90) {
+      // Jika pengguna mengangkat 1 jari setelah pinch (masih tersisa 1 jari di layar)
+      if (e.touches.length === 1) {
+        isGestureMultiTouch = true;
+        lastPinchEndTime = Date.now();
+        panStartFingerX = e.touches[0].clientX - panX;
+        panStartFingerY = e.touches[0].clientY - panY;
+        return;
+      }
+
+      if (e.touches.length > 1) {
+        isGestureMultiTouch = true;
+        lastPinchEndTime = Date.now();
+        return;
+      }
+
+      // Seluruh jari sudah diangkat dari layar (e.touches.length === 0)
+      const now = Date.now();
+
+      // Rapikan posisi ke 1.0x jika pengguna sudah melakukan zoom out mendekati ukuran normal
+      if (zoomScale <= 1.04 && zoomScale !== 1) {
+        resetZoom(true);
+      }
+
+      // JANGAN pindahkan slide jika barusan selesai zoom in/out, sedang ter-zoom, atau dalam masa jeda aman
+      if (
+        isGestureMultiTouch ||
+        wasZoomedDuringGesture ||
+        isAnyZoomActive() ||
+        (now - lastPinchEndTime < 420)
+      ) {
+        isGestureMultiTouch = false;
+        wasZoomedDuringGesture = false;
+        setTimeout(() => { didPanOrPinchMove = false; }, 50);
+        return;
+      }
+
+      const deltaX = e.changedTouches[0].clientX - touchStartX;
+      const deltaY = Math.abs(e.changedTouches[0].clientY - touchStartY);
+
+      if (Math.abs(deltaX) > 40 && deltaY < 90) {
         if (deltaX < 0) nextSlide();
         else prevSlide();
+      }
+
+      setTimeout(() => { didPanOrPinchMove = false; }, 50);
+    }, { passive: true });
+
+    document.addEventListener('touchcancel', () => {
+      isGestureMultiTouch = false;
+      wasZoomedDuringGesture = false;
+      didPanOrPinchMove = false;
+      if (zoomScale <= 1.04) {
+        resetZoom(true);
       }
     }, { passive: true });
 
